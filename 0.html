@@ -1804,14 +1804,13 @@ const newValue = list.join(", ");
 input.value = newValue;
 
 // 🔥 STOP dulu scanner
-closeModal();
 stopScanner();
+closeModal();
 
 // 🔥 BARU search (delay sikit wajib)
 setTimeout(() => {
   search(newValue);
 }, 100);
-},
     (errorMessage) => {
       console.log(errorMessage);
     }
