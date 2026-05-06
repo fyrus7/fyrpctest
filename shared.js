@@ -1245,46 +1245,4 @@ async function showCategoryBalance() {
 }
 
 
-async function handleCategoryBalance(env) {
-  try {
-    const rows = await env.DB.prepare(`
-      SELECT
-        category,
-        COUNT(*) AS total,
-        SUM(CASE WHEN upper(trim(status)) = 'COLLECTED' THEN 1 ELSE 0 END) AS collected
-      FROM participants
-      WHERE category IS NOT NULL AND trim(category) != ''
-      GROUP BY category
-    `).all()
 
-    const result = (rows.results || []).map(r => {
-      const total = Number(r.total) || 0
-      const collected = Number(r.collected) || 0
-
-      return {
-        category: r.category,
-        total,
-        collected,
-        balance: total - collected
-      }
-    })
-
-    // 🔥 SORT HERE (WAJIB letak sini)
-result.sort((a, b) => {
-  const getNum = (v) => {
-    const num = String(v.category)
-      .toUpperCase()
-      .replace(/[^0-9]/g, '') // ambil hanya nombor sahaja
-
-    return num ? Number(num) : 999999
-  }
-
-  return getNum(a) - getNum(b)
-})
-
-    return json({ success: true, data: result })
-
-  } catch (e) {
-    return json({ success: false, error: e.toString() }, 500)
-  }
-}
