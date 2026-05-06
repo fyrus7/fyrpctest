@@ -850,17 +850,60 @@ function closeHoldModal() {
   setDisplay("holdModal", "none");
 }
 
+// BARU
 async function showCollectedStatus() {
   const showCollected = safeEl("showCollected");
   const icon = safeEl("showCollectedIcon");
+
   if (icon) icon.className = "bi bi-arrow-repeat spin";
 
   clearSearch();
   if (showCollected) showCollected.disabled = true;
 
   try {
-    const statusMessage = await apiText("/status");
-    displayStatus(statusMessage);
+    const res = await fetch("/status");
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error("Failed");
+    }
+
+    const html = `
+      <div style="display:flex; justify-content:center; margin-bottom:20px;">
+        <table border="1" cellspacing="0"
+          style="
+            border-collapse:collapse;
+            text-align:center;
+            width:100%;
+          ">
+
+          <tr>
+            <th style="text-align:left; padding:8px;">Category</th>
+            <th style="padding:8px;">Collected</th>
+            <th style="padding:8px;">Total</th>
+          </tr>
+
+          ${data.status}
+
+          <tr style="font-weight:bold; background:#f0f0f0;">
+            <td style="text-align:left; padding:8px;">Summary</td>
+            <td style="padding:8px;">${data.totalCollected}</td>
+            <td style="padding:8px;">${data.totalTarget}</td>
+          </tr>
+
+          <tr style="font-weight:bold; background:#e8faff;">
+            <td style="text-align:left; padding:8px;">Balance</td>
+            <td colspan="2" style="padding:8px;">
+              ${data.balance}
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    `;
+
+    displayStatus(html);
+
   } catch (err) {
     console.error(err);
     displayStatus("<span style='color:red;'>Failed to load status</span>");
