@@ -1798,19 +1798,28 @@ async function startScanner() {
   beepSound?.play();
   navigator.vibrate?.(100);
 
- list.push(decodedText);
+list.push(decodedText);
 
 const newValue = list.join(", ");
 input.value = newValue;
 
-// 🔥 STOP dulu scanner
-stopScanner();
-closeModal();
+// debug
+console.log("SCAN RESULT:", newValue);
 
-// 🔥 BARU search (delay sikit wajib)
+// trigger search dulu
 setTimeout(() => {
-  search(newValue);
-}, 100);
+  if (typeof search === "function") {
+    search(newValue);
+  } else {
+    console.error("search() not found in scope");
+  }
+}, 250);
+
+// stop UI kemudian
+setTimeout(() => {
+  stopScanner();
+  closeModal();
+}, 500);
 },
     (errorMessage) => {
       console.log(errorMessage);
