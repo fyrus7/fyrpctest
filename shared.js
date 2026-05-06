@@ -852,58 +852,6 @@ function closeHoldModal() {
 
 
 
-
-// Function to fetch and display collected status from D1 Worker
-function showCollectedStatus() {
-  fetch(`${WORKER_API}/status`)  // Call to D1 Worker instead of Google Sheets API
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        const resultContainer = document.getElementById('result');
-        
-        // Build the table rows for displaying the status
-        let rowsHtml = data.status;
-        let totalCollected = data.totalCollected;
-        let totalTarget = data.totalTarget;
-
-        // Add the summary and balance rows
-        rowsHtml += `
-          <tr style="font-weight:bold; background:#f0f0f0;">
-            <td style="text-align:left; padding:8px;">Summary</td>
-            <td style="padding:8px;">${totalCollected}</td>
-            <td style="padding:8px;">${totalTarget}</td>
-          </tr>
-          <tr style="font-weight:bold; background:#e8faff;">
-            <td style="text-align:left; padding:8px;">Balance</td>
-            <td colspan="2" style="padding:8px;">${totalTarget - totalCollected}</td>
-          </tr>
-        `;
-
-        // Update the result container with the HTML table
-        resultContainer.innerHTML = `
-          <div style="display:flex; justify-content:center; margin-bottom:20px;">
-            <table border="1" cellspacing="0" style="border-collapse:collapse; text-align:center; width:100%;">
-              <tr>
-                <th style="text-align:left; padding:8px;">Category</th>
-                <th style="padding:8px;">Collected</th>
-                <th style="padding:8px;">Total</th>
-              </tr>
-              ${rowsHtml}
-            </table>
-          </div>
-        `;
-      } else {
-        console.error('Error fetching status:', data.error);
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching status:', error);
-    });
-}
-
-
-
-
 function displayStatus(statusMessage) {
   const container = safeEl("collectedStatusContainer");
   const status = safeEl("collectedStatus");
