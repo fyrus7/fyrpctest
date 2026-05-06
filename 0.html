@@ -1072,12 +1072,14 @@
 .balance-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 4px;
+  padding: 10px 12px;
+  margin: 6px 0;
   font-size: 22px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-.balance-row:last-child {
-  border-bottom: none;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  border: none; /* buang line bawah */
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cat {
