@@ -1068,18 +1068,42 @@
 }
 
 /* row layout */
-.balance-row {
+/*.balance-row {
   display: flex;
   justify-content: space-between;
   padding: 6px 10px;
   font-size: 22px;
-  border-bottom: 1px solid rgba(0,0,0,0.08); /* 🔥 garis halus */
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
 .cat {
   font-weight: 600;
+}*/
+.balance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 6px 10px;
+  font-size: 22px;
+
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
+/* kiri */
+.balance-row > :first-child {
+  flex: 1;
+  text-align: right;   /* 🔥 align kanan */
+  padding-right: 30px;
+  font-weight: 600;
+}
+
+/* kanan */
+.balance-row > :last-child {
+  width: 70px;
+  text-align: left;    /* 🔥 align kiri */
+}
+a
 .dismiss-wrap {
   display: flex;
   justify-content: flex-end;
