@@ -1,4 +1,4 @@
 // config.js
 window.APP_CONFIG = {
-  WORKER_API: "https://fyrpc-backend-sample.iamfyrus.workers.dev"
+  WORKER_API: "https://fyrpctest.iamfyrus.workers.dev"
 };
