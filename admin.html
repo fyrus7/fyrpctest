@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>FyRPC Admin</title>
+
+  <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      margin-top: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f8fa;
+      color: #222;
+    }
+
+.main-content {
+  padding-top: 10px;
+}    
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px !important;
+  padding: 0 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+    .top-header #profileNameDisplay,
+    #profileNameDisplay,
+    #logoutBtn {
+      color: white !important;
+    }
+
+    .top-header #profileNameDisplay {
+      font-size: 14px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f2f2f2;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed !important;
+    }
+
+    button.terminateBtn {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    button.terminateBtn:hover {
+      background-color: #c12e2a;
+    }
+
+
+    .spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Spinner besar untuk global loader sahaja */
+#globalSpinner .spin {
+  font-size: 40px;
+  color: white;
+}
+
+/* Spinner kecil dalam button */
+.btn-spin {
+  font-size: 16px;
+  color: white;
+  line-height: 1;
+}
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #globalSpinner {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      pointer-events: all;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    #globalSpinner i {
+      font-size: 50px;
+    }
+
+    #uiBlocker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: transparent;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0d6efd;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 0.8s linear infinite;
+      margin: auto;
+    }
+
+    #logoutMenu {
+      display: none;
+      position: fixed;
+      top: 48px;
+      right: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      min-width: 180px;
+      overflow: hidden;
+    }
+
+    #logoutMenu div:hover {
+      background: #f5f5f5;
+    }
+
+    .menu-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item.logout {
+      color: red;
+    }
+
+    .section-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-card h2 {
+      margin-top: 0;
+    }
+
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 10002;
+    }
+
+    #confirmModal .modal-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      min-width: 300px;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .primary-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    .success-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+
+    .sale-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #ff9800;
+      color: white;
+      cursor: pointer;
+    }
+
+    .danger-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #d9534f;
+      color: white;
+      cursor: pointer;
+    }
+
+    .grey-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #6c757d;
+      color: white;
+      cursor: pointer;
+    }
+
+    #excludeInput {
+      flex: 1;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    #dateFilter,
+    #saleDateFilter {
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    #sessionSummary {
+      font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 8px;
+      }
+
+      th,
+      td {
+        padding: 7px;
+        font-size: 13px;
+      }
+
+      .section-card {
+        padding: 10px;
+      }
+
+      .top-header {
+        height: 36px;
+      }
+
+      #excludeInput {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="uiBlocker"></div>
+
+  <div id="globalSpinner">
+    <i class="bi bi-arrow-repeat spin"></i>
+  </div>
+
+  <div id="logoutMenu">
+    <div id="dashboardBtn" class="menu-item" onclick="goDashboard()">
+      Dashboard
+    </div>
+
+    <div id="monitorBtn" class="menu-item" onclick="goMonitor()">
+      Monitor
+    </div>
+
+    <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">
+      Logout
+    </div>
+  </div>
+
+<div class="top-header">
+  <div class="profile-display" id="profileNameDisplay" style="color:#455A64; font-weight: bold;">
+    <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
+  </div>
+
+  <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
+    <i class="bi bi-box-arrow-right"></i>
+  </button>
+  </div>
+
+  <div class="main-content">
+  <div id="confirmModal">
+    <div class="modal-box">
+      <p id="modalText"></p>
+
+      <button id="modalYes" class="danger-btn" style="margin-right:10px;">
+        Yes
+      </button>
+
+      <button id="modalNo" class="grey-btn">
+        No
+      </button>
+    </div>
+  </div>
+
+  <!-- ACTIVE SESSIONS -->
+  <div class="section-card">
+    <h2>Active Sessions</h2>
+
+    <table id="sessionTable">
+      <thead>
+        <tr>
+          <th>Crew</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>X</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td colspan="4">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="actions-row">
+      <button id="refreshBtn" class="primary-btn">
+        REFRESH
+      </button>
+
+      <div id="sessionSummary"></div>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE -->
+  <div class="section-card">
+    <h2>Performance</h2>
+
+    <label>
+      Select:
+      <select id="dateFilter">
+        <option value="ALL">Loading...</option>
+      </select>
+    </label>
+
+    <table id="usernameTable">
+      <thead>
+        <tr>
+          <th>Crew</th>
+          <th>Total Serve</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td colspan="2">Press REFRESH to load data</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="actions-row">
+      <input
+        type="text"
+        id="excludeInput"
+        placeholder="Exclude (comma separated)"
+      >
+
+      <button id="refreshUsernamesBtn" class="success-btn">
+        REFRESH
+      </button>
+
+      <button id="clearUsernamesBtn" class="grey-btn">
+        CLEAR
+      </button>
+    </div>
+  </div>
+
+  <!-- SALE -->
+  <div class="section-card" style="margin-bottom:70px;">
+    <h2>Sale</h2>
+
+    <label>
+      Select:
+      <select id="saleDateFilter">
+        <option value="ALL">Loading...</option>
+      </select>
+    </label>
+
+    <table id="saleTable">
+      <thead>
+        <tr>
+          <th>Crew</th>
+          <th>Total Sale</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td colspan="2">Press REFRESH to load data</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="actions-row">
+      <button id="refreshSaleBtn" class="sale-btn">
+        REFRESH
+      </button>
+
+      <button id="clearSaleBtn" class="grey-btn">
+        CLEAR
+      </button>
+    </div>
+  </div>
+  </div>
+  
+<script src="config.js"></script>
+  
+  <script>
+    const WORKER_API = window.APP_CONFIG.WORKER_API;
+
+    function cleanApiBase() {
+      return String(WORKER_API || "").replace(/\/+$/, "");
+    }
+
+    async function apiJson(path, options = {}) {
+      const res = await fetch(`${cleanApiBase()}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+
+      const raw = await res.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        throw new Error(raw || `HTTP ${res.status}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      return data;
+    }
+
+    function showLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "flex";
+      }
+
+      blockUI(true);
+    }
+
+    function hideLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "none";
+      }
+
+      blockUI(false);
+    }
+
+    function blockUI(state) {
+      const blocker = document.getElementById("uiBlocker");
+
+      if (blocker) {
+        blocker.style.display = state ? "block" : "none";
+      }
+    }
+
+    function setAllButtonsDisabled(state) {
+      document
+        .querySelectorAll("button, input[type=button]")
+        .forEach(btn => {
+          btn.disabled = state;
+        });
+    }
+
+    function isMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+      return (
+        /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+        window.innerWidth <= 768 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    }
+
+    function routeDashboardPage() {
+      window.location.href = isMobileDevice()
+        ? "0.html"
+        : "1.html";
+    }
+
+    function requireLogin() {
+      const token = localStorage.getItem("sessionToken");
+      const profile = localStorage.getItem("userProfile");
+
+      if (!token || !profile) {
+        window.location.replace("index.html");
+        return false;
+      }
+
+      document.getElementById("userProfile").textContent =
+        profile.toUpperCase();
+
+      apiJson("/validate", {
+        method: "POST",
+        body: JSON.stringify({ token })
+      })
+        .then(response => {
+          if (!response.valid) {
+            localStorage.clear();
+            window.location.replace("index.html");
+          }
+        })
+        .catch(err => {
+          console.log("VALIDATE ERROR:", err);
+        });
+
+      return true;
+    }
+
+function startBtnLoading(btn) {
+  if (!btn) return;
+
+  const width = btn.offsetWidth;
+  const height = btn.offsetHeight;
+
+  btn.style.width = width + "px";
+  btn.style.height = height + "px";
+
+  btn.dataset.loading = "true";
+  btn.disabled = true;
+
+  btn.innerHTML = '<i class="bi bi-arrow-repeat spin btn-spin"></i>';
+}
+
+function stopBtnLoading(btn, originalText) {
+  if (!btn) return;
+
+  btn.disabled = false;
+  btn.dataset.loading = "";
+
+  btn.innerHTML = originalText;
+
+  btn.style.width = "";
+  btn.style.height = "";
+}
+
+    function renderSessions(data) {
+      const tbody = document.querySelector("#sessionTable tbody");
+
+      tbody.innerHTML = "";
+
+      let activeCount = 0;
+      let expiredCount = 0;
+
+      (data || []).forEach(row => {
+        if (row.expired) {
+          expiredCount++;
+        } else {
+          activeCount++;
+        }
+      });
+
+      document.getElementById("sessionSummary").innerHTML =
+        `Active: ${activeCount} | Expired: ${expiredCount}`;
+
+      if (!data || !data.length) {
+        tbody.innerHTML = "<tr><td colspan='4'>No active sessions</td></tr>";
+        return;
+      }
+
+      data.forEach(row => {
+        const username = String(row.username || "");
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${username.toUpperCase()}</td>
+          <td>${row.duration || ""}</td>
+          <td>${row.expired ? "Expired" : "Active"}</td>
+          <td>
+            <button
+              class="terminateBtn"
+              onclick="terminateSession('${username.replace(/'/g, "\\'")}')"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </td>
+        `;
+
+        if (row.expired) {
+          tr.style.opacity = "0.5";
+          tr.style.color = "red";
+        }
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadSessions() {
+      try {
+        const data = await apiJson("/sessions");
+
+        renderSessions(data);
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load sessions.");
+      }
+    }
+
+    function terminateSession(username) {
+      const modal = document.getElementById("confirmModal");
+      const modalText = document.getElementById("modalText");
+      const btnYes = document.getElementById("modalYes");
+      const btnNo = document.getElementById("modalNo");
+
+      modalText.textContent = `Terminate session for ${username}?`;
+      modal.style.display = "flex";
+
+      btnYes.onclick = null;
+      btnNo.onclick = null;
+
+      btnNo.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      btnYes.onclick = async function () {
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+
+        modalText.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+            <div class="loader" style="width:25px;height:25px;border-width:3px;"></div>
+            <div>Terminating session...</div>
+          </div>
+        `;
+
+        try {
+          const response = await apiJson("/terminate", {
+            method: "POST",
+            body: JSON.stringify({ username })
+          });
+
+          modal.style.display = "none";
+
+          if (response.success) {
+            await loadSessions();
+          } else {
+            alert("Failed to terminate session.");
+          }
+
+        } catch (err) {
+          console.error(err);
+          modalText.innerText = "Error terminating session.";
+
+        } finally {
+          btnYes.disabled = false;
+          btnNo.disabled = false;
+          btnYes.textContent = "Yes";
+        }
+      };
+    }
+
+    async function loadDates() {
+      const performanceSelect = document.getElementById("dateFilter");
+      const saleSelect = document.getElementById("saleDateFilter");
+
+      try {
+        const performanceDates = await apiJson("/dates?mode=performance");
+
+        performanceSelect.innerHTML = "";
+
+        if (!performanceDates || performanceDates.length === 0) {
+          performanceSelect.innerHTML = '<option value="ALL">ALL</option>';
+        } else {
+          if (performanceDates.length > 1) {
+            performanceSelect.innerHTML += '<option value="ALL">ALL</option>';
+          }
+
+          performanceDates.forEach(date => {
+            performanceSelect.innerHTML += `<option value="${date}">${date}</option>`;
+          });
+        }
+
+      } catch (err) {
+        console.error("Performance dates error:", err);
+        performanceSelect.innerHTML = '<option value="ALL">ALL</option>';
+      }
+
+      try {
+        const saleDates = await apiJson("/dates?mode=sale");
+
+        saleSelect.innerHTML = "";
+
+        if (!saleDates || saleDates.length === 0) {
+          saleSelect.innerHTML = '<option value="ALL">ALL</option>';
+        } else {
+          if (saleDates.length > 1) {
+            saleSelect.innerHTML += '<option value="ALL">ALL</option>';
+          }
+
+          saleDates.forEach(date => {
+            saleSelect.innerHTML += `<option value="${date}">${date}</option>`;
+          });
+        }
+
+      } catch (err) {
+        console.error("Sale dates error:", err);
+        saleSelect.innerHTML = '<option value="ALL">ALL</option>';
+      }
+    }
+
+    async function loadPerformance() {
+      try {
+        const excludeStr = document.getElementById("excludeInput").value.trim();
+
+        const excludeUsers = excludeStr
+          ? excludeStr
+              .split(",")
+              .map(user => user.trim().toLowerCase())
+              .filter(Boolean)
+          : [];
+
+        const selectedDate =
+          document.getElementById("dateFilter").value || "ALL";
+
+        const data = await apiJson("/performance", {
+          method: "POST",
+          body: JSON.stringify({
+            date: selectedDate
+          })
+        });
+
+        const tbody = document.querySelector("#usernameTable tbody");
+
+        tbody.innerHTML = "";
+
+        if (!data || !data.length) {
+          tbody.innerHTML = "<tr><td colspan='2'>No data</td></tr>";
+          return;
+        }
+
+        let total = 0;
+
+        data.forEach(row => {
+          const username = String(row.username || "").toLowerCase();
+
+          if (!excludeUsers.includes(username)) {
+            const count = Number(row.count) || 0;
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+              <td>${username.toUpperCase()}</td>
+              <td>${count}</td>
+            `;
+
+            tbody.appendChild(tr);
+
+            total += count;
+          }
+        });
+
+        const trTotal = document.createElement("tr");
+
+        trTotal.style.fontWeight = "bold";
+
+        trTotal.innerHTML = `
+          <td>Total</td>
+          <td>${total}</td>
+        `;
+
+        tbody.appendChild(trTotal);
+
+      } catch (err) {
+        console.error("loadPerformance error:", err);
+        alert("Failed to load performance.");
+      }
+    }
+
+    async function loadSales() {
+      try {
+        const selectedDate =
+          document.getElementById("saleDateFilter").value || "ALL";
+
+        const data = await apiJson("/sale", {
+          method: "POST",
+          body: JSON.stringify({
+            date: selectedDate
+          })
+        });
+
+        const tbody = document.querySelector("#saleTable tbody");
+
+        tbody.innerHTML = "";
+
+        if (!data || !data.length) {
+          tbody.innerHTML = "<tr><td colspan='2'>No data</td></tr>";
+          return;
+        }
+
+        let total = 0;
+
+        data.forEach(row => {
+          const username = String(row.username || "").toUpperCase();
+          const count = Number(row.count) || 0;
+
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${username}</td>
+            <td>${count}</td>
+          `;
+
+          tbody.appendChild(tr);
+
+          total += count;
+        });
+
+        const trTotal = document.createElement("tr");
+
+        trTotal.style.fontWeight = "bold";
+
+        trTotal.innerHTML = `
+          <td>Total</td>
+          <td>${total}</td>
+        `;
+
+        tbody.appendChild(trTotal);
+
+      } catch (err) {
+        console.error("loadSales error:", err);
+        alert("Failed to load sale.");
+      }
+    }
+
+    function clearPerformance() {
+      document.getElementById("dateFilter").value = "ALL";
+
+      document.querySelector("#usernameTable tbody").innerHTML =
+        "<tr><td colspan='2'>Press REFRESH to load data</td></tr>";
+    }
+
+    function clearSale() {
+      document.getElementById("saleDateFilter").value = "ALL";
+
+      document.querySelector("#saleTable tbody").innerHTML =
+        "<tr><td colspan='2'>Press REFRESH to load data</td></tr>";
+    }
+
+    function handleLogoutClick() {
+      const role = (localStorage.getItem("userProfile") || "").toLowerCase();
+
+      if (role === "admin" || role === "mod") {
+        openLogoutMenu();
+      } else {
+        logout();
+      }
+    }
+
+    function openLogoutMenu() {
+      const menu = document.getElementById("logoutMenu");
+
+      if (!menu) return;
+
+      menu.style.display =
+        menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", event => {
+      const menu = document.getElementById("logoutMenu");
+      const btn = document.getElementById("logoutBtn");
+
+      if (!menu || !btn) return;
+
+      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        menu.style.display = "none";
+      }
+    });
+
+    function goDashboard() {
+      const btn = document.getElementById("dashboardBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      routeDashboardPage();
+    }
+
+    function goMonitor() {
+      const btn = document.getElementById("monitorBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "monitor.html";
+    }
+
+    async function logout() {
+      setAllButtonsDisabled(true);
+
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (logoutBtn) {
+        logoutBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      const token = localStorage.getItem("sessionToken");
+
+      try {
+        if (token) {
+          await apiJson("/logout", {
+            method: "POST",
+            body: JSON.stringify({ token })
+          });
+        }
+
+      } catch (err) {
+        console.log("LOGOUT ERROR:", err);
+
+      } finally {
+        localStorage.clear();
+        window.location.replace("index.html");
+      }
+    }
+
+    function logoutFromMenu() {
+      const btn = document.getElementById("logoutMenuBtn");
+      const dashboardBtn = document.getElementById("dashboardBtn");
+      const monitorBtn = document.getElementById("monitorBtn");
+
+      [dashboardBtn, monitorBtn, btn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      if (btn) {
+        btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      logout();
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      showLoader();
+
+      if (!requireLogin()) return;
+
+      try {
+        await loadSessions();
+        await loadDates();
+
+        // IMPORTANT:
+        // Performance dan Sale TIDAK auto-load di sini.
+        // Hanya load bila tekan REFRESH button masing-masing.
+
+      } finally {
+        hideLoader();
+      }
+
+      document.getElementById("refreshBtn")?.addEventListener("click", async function () {
+        const btn = this;
+
+        if (btn.dataset.loading) return;
+
+        const originalText = btn.innerText;
+
+        startBtnLoading(btn);
+
+        try {
+          await loadSessions();
+        } finally {
+          stopBtnLoading(btn, originalText);
+        }
+      });
+
+      document.getElementById("refreshUsernamesBtn")?.addEventListener("click", async function () {
+        const btn = this;
+
+        if (btn.dataset.loading) return;
+
+        const originalText = btn.innerText;
+
+        startBtnLoading(btn);
+
+        try {
+          await loadPerformance();
+        } finally {
+          stopBtnLoading(btn, originalText);
+        }
+      });
+
+      document.getElementById("clearUsernamesBtn")?.addEventListener("click", clearPerformance);
+
+      document.getElementById("refreshSaleBtn")?.addEventListener("click", async function () {
+        const btn = this;
+
+        if (btn.dataset.loading) return;
+
+        const originalText = btn.innerText;
+
+        startBtnLoading(btn);
+
+        try {
+          await loadSales();
+        } finally {
+          stopBtnLoading(btn, originalText);
+        }
+      });
+
+      document.getElementById("clearSaleBtn")?.addEventListener("click", clearSale);
+    });
+  </script>
+</body>
+</html>

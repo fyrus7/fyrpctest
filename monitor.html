@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>FyRPC Monitor</title>
+
+  <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      margin-top: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f8fa;
+      color: #222;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed !important;
+    }
+
+.main-content {
+  padding-top: 20px;
+}    
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px !important;
+  padding: 0 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+    .top-header #profileNameDisplay,
+    #profileNameDisplay,
+    #logoutBtn {
+      color: white !important;
+    }
+
+    .top-header #profileNameDisplay {
+      font-size: 14px;
+    }
+
+    .table-container {
+      overflow: auto;
+      height: 80vh;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #fff;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      font-size: 13px;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    th:first-child,
+    td:first-child {
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th:nth-child(2),
+    th:nth-child(3),
+    td:nth-child(2),
+    td:nth-child(3) {
+      text-align: center;
+      width: 70px;
+      max-width: 70px;
+    }
+
+    td:nth-child(3) {
+      font-size: 18px;
+    }
+
+    th {
+      background: #f1f1f1;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .refresh-btn {
+      width: 150px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0d6efd;
+      color: white;
+      cursor: pointer;
+    }
+
+    .refresh-btn:hover {
+      background: #0b5ed7;
+    }
+
+    #confirmYes {
+      background: red;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+    }
+
+    #confirmYes:hover {
+      background: darkred;
+    }
+
+    .spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Spinner besar untuk global loader sahaja */
+#globalSpinner .spin {
+  font-size: 40px;
+  color: white;
+}
+
+/* Spinner kecil dalam button */
+.btn-spin {
+  font-size: 16px;
+  color: white;
+  line-height: 1;
+}
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #globalSpinner {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      pointer-events: all;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    #globalSpinner i {
+      font-size: 50px;
+    }
+
+    #uiBlocker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: transparent;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0d6efd;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 0.8s linear infinite;
+      margin: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0 10px;
+    }
+
+    #searchInput {
+      width: 250px;
+      max-width: 60%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    #last-updated {
+      text-align: right;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    #logoutMenu {
+      display: none;
+      position: fixed;
+      top: 48px;
+      right: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      min-width: 180px;
+      overflow: hidden;
+    }
+
+    #logoutMenu div:hover {
+      background: #f5f5f5;
+    }
+
+    .menu-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item.logout {
+      color: red;
+    }
+
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 10002;
+    }
+
+    .confirm-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      min-width: 250px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    #confirmText {
+      margin-bottom: 15px;
+    }
+
+    #spinner {
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 8px;
+      }
+
+      .top-header {
+        height: 36px;
+      }
+
+      .top-bar {
+        align-items: stretch;
+      }
+
+      #searchInput {
+        width: 100%;
+        max-width: none;
+        flex: 1;
+      }
+
+      .refresh-btn {
+        width: 110px;
+      }
+
+      th,
+      td {
+        padding: 6px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- UI Blocker + Spinner -->
+  <div id="uiBlocker"></div>
+
+  <div id="globalSpinner">
+    <i class="bi bi-arrow-repeat spin"></i>
+  </div>
+
+  <!-- Logout Menu -->
+  <div id="logoutMenu">
+    <div id="dashboardBtn" class="menu-item" onclick="goDashboard()">
+      Dashboard
+    </div>
+
+    <div id="adminBtn" class="menu-item" onclick="goAdmin()">
+      Admin
+    </div>
+
+    <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">
+      Logout
+    </div>
+  </div>
+<div class="main-content">
+  <!-- Confirm Modal -->
+  <div id="confirmModal">
+    <div class="confirm-box">
+      <p id="confirmText">
+        Clear this record?
+      </p>
+
+      <div id="spinner">
+        <div class="loader"></div>
+      </div>
+
+      <button id="confirmYes" style="margin-right:10px;">
+        CONFIRM
+      </button>
+
+      <button id="confirmCancel" onclick="closeModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Header -->
+<div class="top-header">
+  <div class="profile-display" id="profileNameDisplay" style="color:#455A64; font-weight: bold;">
+    <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
+  </div>
+
+  <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
+    <i class="bi bi-box-arrow-right"></i>
+  </button>
+</div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <input
+      id="searchInput"
+      placeholder="Search name / bib..."
+    >
+
+    <button
+      onclick="refreshData()"
+      class="refresh-btn"
+    >
+      Refresh
+    </button>
+  </div>
+
+  <div id="last-updated"></div>
+
+  <br>
+
+  <!-- Monitor Table -->
+  <div class="table-container">
+    <table id="sheetTable"></table>
+  </div>
+</div>
+  <script src="config.js"></script>
+  
+  <script>
+    const WORKER_API = window.APP_CONFIG.WORKER_API;
+
+    function cleanApiBase() {
+      return String(WORKER_API || "").replace(/\/+$/, "");
+    }
+
+    async function apiJson(path, options = {}) {
+      const res = await fetch(`${cleanApiBase()}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+
+      const raw = await res.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        throw new Error(raw || `HTTP ${res.status}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      return data;
+    }
+
+    function showLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "flex";
+      }
+
+      blockUI(true);
+    }
+
+    function hideLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "none";
+      }
+
+      blockUI(false);
+    }
+
+    function blockUI(state) {
+      const blocker = document.getElementById("uiBlocker");
+
+      if (blocker) {
+        blocker.style.display = state ? "block" : "none";
+      }
+    }
+
+    function setAllButtonsDisabled(state) {
+      document
+        .querySelectorAll("button, input[type=button]")
+        .forEach(btn => {
+          btn.disabled = state;
+        });
+    }
+
+    function isMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+      return (
+        /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+        window.innerWidth <= 768 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    }
+
+    function routeDashboardPage() {
+      window.location.href = isMobileDevice()
+        ? "0.html"
+        : "1.html";
+    }
+
+    function requireLogin() {
+      const token = localStorage.getItem("sessionToken");
+      const profile = localStorage.getItem("userProfile");
+
+      if (!token || !profile) {
+        window.location.replace("index.html");
+        return false;
+      }
+
+      document.getElementById("userProfile").textContent =
+        profile.toUpperCase();
+
+      apiJson("/validate", {
+        method: "POST",
+        body: JSON.stringify({ token })
+      })
+        .then(response => {
+          if (!response.valid) {
+            localStorage.clear();
+            window.location.replace("index.html");
+          }
+        })
+        .catch(err => {
+          console.log("VALIDATE ERROR:", err);
+        });
+
+      return true;
+    }
+
+    let originalData = [];
+    let editMode = false;
+    let statusStep = 0;
+    let currentSearch = "";
+    let pendingRow = null;
+
+    const sortState = {
+      column: null,
+      direction: null
+    };
+
+    function renderTable(data) {
+      const table = document.getElementById("sheetTable");
+
+      table.innerHTML = "";
+
+      if (!data || !Array.isArray(data) || !data.length) {
+        table.innerHTML = "<tr><td>No data</td></tr>";
+        return;
+      }
+
+      data.forEach((row, i) => {
+        const tr = document.createElement("tr");
+
+        const visibleLength =
+          i === 0 ? row.length : row.length - 1;
+
+        for (let colIndex = 0; colIndex < visibleLength; colIndex++) {
+          const el = document.createElement(i === 0 ? "th" : "td");
+
+          let value = row[colIndex] ?? "";
+
+          if (i !== 0 && colIndex === 2) {
+            const isCollected =
+              String(row[2] || "").trim().toUpperCase() === "COLLECTED";
+
+            if (editMode) {
+              if (isCollected) {
+                value = "✖";
+                el.style.color = "red";
+                el.style.cursor = "pointer";
+
+                el.onclick = () => openConfirm(row[3]);
+              } else {
+                value = "";
+              }
+
+            } else {
+              value = isCollected ? "✓" : "";
+            }
+          }
+
+          el.textContent = value;
+
+          if (i === 0) {
+            el.onclick = () => handleSort(colIndex);
+          }
+
+          if (
+            i !== 0 &&
+            String(row[2] || "").trim().toUpperCase() === "COLLECTED"
+          ) {
+            tr.style.background = "#e6ffe6";
+          }
+
+          tr.appendChild(el);
+        }
+
+        table.appendChild(tr);
+      });
+    }
+
+    function handleSort(colIndex) {
+      if (colIndex === 2) {
+        statusStep++;
+
+        if (statusStep === 1) {
+          sortState.column = 2;
+          sortState.direction = "asc";
+          editMode = false;
+
+        } else if (statusStep === 2) {
+          sortState.direction = "desc";
+          editMode = false;
+
+        } else if (statusStep === 3) {
+          sortState.column = null;
+          sortState.direction = null;
+          editMode = false;
+
+        } else if (statusStep === 4) {
+          editMode = true;
+
+        } else {
+          statusStep = 0;
+          sortState.column = null;
+          sortState.direction = null;
+          editMode = false;
+        }
+
+      } else {
+        statusStep = 0;
+        editMode = false;
+
+        if (sortState.column === colIndex) {
+          if (sortState.direction === "asc") {
+            sortState.direction = "desc";
+          } else {
+            sortState.column = null;
+            sortState.direction = null;
+          }
+
+        } else {
+          sortState.column = colIndex;
+          sortState.direction = "asc";
+        }
+      }
+
+      applySort();
+    }
+
+    function applySort() {
+      if (!originalData || originalData.length === 0) return;
+
+      const header = originalData[0];
+
+      let data = originalData.slice(1);
+
+      if (currentSearch) {
+        data = data.filter(row =>
+          String(row[1] || "").toLowerCase().includes(currentSearch) ||
+          String(row[0] || "").toLowerCase().includes(currentSearch)
+        );
+      }
+
+      if (sortState.column === null && !sortState.direction && !editMode) {
+        renderTable([header, ...data]);
+        return;
+      }
+
+      const col = sortState.column;
+      const dir = sortState.direction;
+
+      if (col !== null && dir) {
+        data.sort((a, b) => {
+          const A = String(a[col] || "").toUpperCase();
+          const B = String(b[col] || "").toUpperCase();
+
+          if (col === 2) {
+            if (A === B) return 0;
+
+            return dir === "asc"
+              ? (A === "COLLECTED" ? 1 : -1)
+              : (A === "COLLECTED" ? -1 : 1);
+          }
+
+          return dir === "asc"
+            ? String(a[col] || "")
+                .trim()
+                .localeCompare(
+                  String(b[col] || "").trim(),
+                  undefined,
+                  { sensitivity: "base" }
+                )
+            : String(b[col] || "")
+                .trim()
+                .localeCompare(
+                  String(a[col] || "").trim(),
+                  undefined,
+                  { sensitivity: "base" }
+                );
+        });
+      }
+
+      renderTable([header, ...data]);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      currentSearch = this.value.toLowerCase().trim();
+      applySort();
+    });
+
+    document.getElementById("searchInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        currentSearch = this.value.toLowerCase().trim();
+        applySort();
+      }
+    });
+
+    function openConfirm(rowNumber) {
+      pendingRow = rowNumber;
+      document.getElementById("confirmModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      pendingRow = null;
+      document.getElementById("confirmModal").style.display = "none";
+    }
+
+    document.getElementById("confirmYes").onclick = async function () {
+      if (!pendingRow) return;
+
+      document.getElementById("spinner").style.display = "block";
+      document.getElementById("confirmText").innerText = "Processing...";
+      document.getElementById("confirmYes").disabled = true;
+      document.getElementById("confirmCancel").disabled = true;
+
+      try {
+        const response = await apiJson("/clear", {
+          method: "POST",
+          body: JSON.stringify({
+            row: pendingRow
+          })
+        });
+
+        if (!response.success) {
+          alert("Failed to clear record.");
+        }
+
+        closeModal();
+
+        await refreshData();
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to clear record.");
+
+      } finally {
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("confirmText").innerText = "Clear this record?";
+        document.getElementById("confirmYes").disabled = false;
+        document.getElementById("confirmCancel").disabled = false;
+      }
+    };
+
+    async function refreshData() {
+      const btn = document.querySelector(".refresh-btn");
+
+      try {
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = "Refreshing...";
+        }
+
+        showLoader();
+
+        const data = await apiJson("/monitor");
+
+        originalData = data;
+
+        applySort();
+
+        document.getElementById("last-updated").innerText =
+          "Last updated: " + new Date().toLocaleTimeString();
+
+      } catch (err) {
+        console.error(err);
+
+        document.getElementById("sheetTable").innerHTML =
+          "<tr><td>Failed to load monitor data</td></tr>";
+
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = "Refresh";
+        }
+
+        hideLoader();
+      }
+    }
+
+    function handleLogoutClick() {
+      const role = (localStorage.getItem("userProfile") || "").toLowerCase();
+
+      if (role === "admin" || role === "mod") {
+        openLogoutMenu();
+      } else {
+        logout();
+      }
+    }
+
+    function openLogoutMenu() {
+      const menu = document.getElementById("logoutMenu");
+
+      menu.style.display =
+        menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", event => {
+      const menu = document.getElementById("logoutMenu");
+      const btn = document.getElementById("logoutBtn");
+
+      if (!menu || !btn) return;
+
+      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        menu.style.display = "none";
+      }
+    });
+
+
+    function goDashboard() {
+      const btn = document.getElementById("dashboardBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      routeDashboardPage();
+    }
+
+    function goAdmin() {
+      const btn = document.getElementById("adminBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "admin.html";
+    }
+
+    async function logout() {
+      setAllButtonsDisabled(true);
+
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (logoutBtn) {
+        logoutBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      const token = localStorage.getItem("sessionToken");
+
+      try {
+        if (token) {
+          await apiJson("/logout", {
+            method: "POST",
+            body: JSON.stringify({
+              token
+            })
+          });
+        }
+
+      } catch (err) {
+        console.log("LOGOUT ERROR:", err);
+
+      } finally {
+        localStorage.clear();
+        window.location.replace("index.html");
+      }
+    }
+
+    function logoutFromMenu() {
+      const btn = document.getElementById("logoutMenuBtn");
+      const adminBtn = document.getElementById("adminBtn");
+      const dashboardBtn = document.getElementById("dashboardBtn");
+
+      [adminBtn, dashboardBtn, btn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      if (btn) {
+          btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      logout();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (!requireLogin()) return;
+
+      refreshData();
+    });
+  </script>
+</body>
+</html>

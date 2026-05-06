@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FyRPC Login</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'K2D', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: url("Media/gradientbg5.jpg") no-repeat center center fixed;
+    background-size: cover;
+
+    padding: 20px;
+  }
+
+  .glass-container {
+    width: 100%;
+    max-width: 300px;
+
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+
+    border-radius: 16px;
+    padding: 40px 30px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.pin-wrapper {
+  position: relative;
+  width: 220px;
+  max-width: 100%;
+  margin: 0 auto 12px auto;
+}
+
+.input-box {
+  width: 100%;
+  height: 42px;
+
+  padding: 10px 42px 10px 42px; /* kiri kanan sama */
+  font-size: 15px;
+
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+
+  text-align: center;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.input-box:focus {
+  border-color: #e83e8c;
+  box-shadow: 0 0 10px rgba(232,62,140,0.3);
+}
+
+#toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  font-size: 18px;
+  color: #6f42c1;
+  text-shadow: 0 0 1px #455A64;
+}
+
+  .submit-button {
+    width: 130px;
+
+    font-size: 15px;
+    color: #ffffff;
+
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+
+    padding: 9px 0;
+    cursor: pointer;
+
+    border: none;
+    border-radius: 20px;
+
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .submit-button:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+
+  .login-info-box {
+    margin-top: 15px;
+    padding: 12px;
+
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-info-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .login-info-content {
+    display: inline-block;
+    text-align: left;
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 15px;
+    }
+
+    .glass-container {
+      padding: 35px 24px;
+    }
+  }
+</style>
+ <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <div class="glass-container">
+    <img id="logoImg" img src="Media/flogo.png" alt="Logo" width="200">
+    <br><br>
+
+    <form id="login-form" onsubmit="event.preventDefault(); validateLogin();">
+<div class="pin-wrapper">
+  <input
+    type="tel"
+    id="pwd"
+    name="password"
+    class="input-box"
+    placeholder="Enter PIN"
+    pattern="[0-9]*"
+    inputmode="numeric"
+    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+  >
+
+  <span id="toggle-password" class="bi bi-eye-slash"></span>
+</div>
+
+<button type="submit" id="submit-btn" class="submit-button">
+  Login
+</button>
+      <div id="error-message" style="color:red; font-weight:bold; margin-top:10px; font-size:18px;"></div>
+    </form>
+
+    <br>FyRPC
+   <br>Multiplatform v2
+    <br>
+    <div class="login-info-box">
+      <div class="login-info-title">Login PIN:</div>
+      <div class="login-info-content">
+        <div>1234 / admin</div>
+        <div>0001 / counter01</div>
+        <div>0002 / counter02</div>
+        <div>0003 / counter03</div>
+      </div>
+    </div>
+  </div>
+
+ <script src="config.js"></script>
+ 
+<script>
+const WORKER_API = window.APP_CONFIG.WORKER_API;
+ 
+let isLoggingIn = false;
+
+function cleanApiBase() {
+  return String(WORKER_API || "").replace(/\/+$/, "");
+}
+
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+  return (
+    /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+    window.innerWidth <= 768 ||
+    window.matchMedia("(pointer: coarse)").matches
+  );
+}
+
+function getDashboardPage() {
+  return isMobileDevice() ? "0.html" : "1.html";
+}
+
+// 🚀 ON LOAD
+window.addEventListener("DOMContentLoaded", () => {
+  const submitButton = document.getElementById("submit-btn");
+  if (!submitButton) return;
+
+  submitButton.innerText = "Verifying...";
+  submitButton.disabled = true;
+
+  const token = localStorage.getItem("sessionToken");
+
+  // 🔐 AUTO LOGIN / VALIDATE SESSION
+  if (token) {
+    fetch(`${cleanApiBase()}/validate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token
+      })
+    })
+      .then(res => res.text())
+      .then(raw => {
+        console.log("RAW VALIDATE:", raw);
+
+        let response;
+
+        try {
+          response = JSON.parse(raw);
+        } catch (e) {
+          submitButton.innerText = "Login";
+          submitButton.disabled = false;
+          return;
+        }
+
+        if (response.valid) {
+          loadDashboard(response.profile);
+        } else {
+          localStorage.clear();
+          submitButton.innerText = "Login";
+          submitButton.disabled = false;
+        }
+      })
+      .catch(err => {
+        console.log("VALIDATE FETCH ERROR:", err);
+        submitButton.innerText = "Login";
+        submitButton.disabled = false;
+      });
+
+  } else {
+    submitButton.innerText = "Login";
+    submitButton.disabled = false;
+  }
+
+  // 👁️ Toggle password
+  const passwordInput = document.getElementById("pwd");
+  const toggleIcon = document.getElementById("toggle-password");
+  const hidePassword = localStorage.getItem("hidePassword");
+
+  if (passwordInput && toggleIcon) {
+    if (hidePassword === "false") {
+      passwordInput.type = "text";
+      toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+      localStorage.setItem("hidePassword", "true");
+    }
+
+    toggleIcon.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
+        localStorage.setItem("hidePassword", "false");
+      } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+        localStorage.setItem("hidePassword", "true");
+      }
+    });
+
+    passwordInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        passwordInput.blur();
+        validateLogin();
+      }
+    });
+  }
+});
+
+// 🔐 LOGIN
+function validateLogin() {
+  if (isLoggingIn) return;
+
+  isLoggingIn = true;
+
+  const enteredPassword = document.getElementById("pwd")?.value || "";
+  const submitButton = document.getElementById("submit-btn");
+  const errorMessage = document.getElementById("error-message");
+
+  if (!submitButton || !errorMessage) {
+    isLoggingIn = false;
+    return;
+  }
+
+  errorMessage.innerText = "";
+  submitButton.innerText = "Loading...";
+  submitButton.disabled = true;
+
+  if (!enteredPassword.trim()) {
+    errorMessage.innerText = "Please enter your password.";
+    submitButton.innerText = "Login";
+    submitButton.disabled = false;
+    isLoggingIn = false;
+    return;
+  }
+
+  fetch(`${cleanApiBase()}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      password: enteredPassword
+    })
+  })
+    .then(res => res.text())
+    .then(raw => {
+      console.log("RAW LOGIN:", raw);
+
+      let response;
+
+      try {
+        response = JSON.parse(raw);
+      } catch (e) {
+        alert("SERVER ERROR:\n" + raw);
+        isLoggingIn = false;
+        submitButton.innerText = "Login";
+        submitButton.disabled = false;
+        return;
+      }
+
+      isLoggingIn = false;
+      submitButton.innerText = "Login";
+      submitButton.disabled = false;
+
+      if (response.success) {
+        localStorage.setItem("sessionToken", response.token);
+        localStorage.setItem("userProfile", response.profile);
+        localStorage.setItem("lastDashboardPage", getDashboardPage());
+
+        loadDashboard(response.profile);
+
+      } else {
+        if (response.reason === "NO_MATCH") {
+          errorMessage.innerText = "Wrong Password";
+        } else if (response.error) {
+          errorMessage.innerText =
+            typeof response.error === "string"
+              ? response.error
+              : JSON.stringify(response.error);
+        } else {
+          errorMessage.innerText = "Wrong Password";
+        }
+      }
+    })
+    .catch(err => {
+      console.log("FETCH ERROR:", err);
+
+      isLoggingIn = false;
+      submitButton.innerText = "Login";
+      submitButton.disabled = false;
+      errorMessage.innerText = "Server Under Maintenance";
+    });
+}
+
+// 📱 / 💻 REDIRECT PAGE
+function loadDashboard(profile) {
+  if (!profile) return;
+
+  profile = String(profile).toLowerCase();
+  localStorage.setItem("userProfile", profile);
+
+  if (["mod", "admin"].includes(profile)) {
+    showMasterChoice();
+    return;
+  }
+
+  goDashboard();
+}
+
+function goDashboard() {
+  const page = getDashboardPage();
+
+  localStorage.setItem("lastDashboardPage", page);
+  window.location.href = page;
+}
+
+function goPage(page) {
+  localStorage.setItem("lastDashboardPage", page);
+  window.location.href = page;
+}
+
+function showMasterChoice() {
+  const oldOverlay = document.getElementById("choiceOverlay");
+  if (oldOverlay) oldOverlay.remove();
+
+  const modal = document.createElement("div");
+
+  modal.innerHTML = `
+    <div id="choiceOverlay" style="
+      position:fixed;
+      top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    ">
+      <div id="choiceBox" style="
+        background: rgba(255,255,255,0.95);
+        padding:20px;
+        border-radius:16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        text-align:center;
+        width:280px;
+      ">
+        <h3 style="margin:0; color:#6f42c1;">Choose Page</h3>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px;">
+          <button id="goDashboard" class="choiceBtn">Dashboard</button>
+          <button id="goMonitor" class="choiceBtn">Monitor</button>
+          <button id="goAdmin" class="choiceBtn">Admin</button>
+        </div>
+
+        <button id="goCancel" class="cancelBtn">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  ensureChoiceStyle();
+
+  function showSpinner(message) {
+    const box = document.getElementById("choiceBox");
+    if (!box) return;
+
+    box.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="
+          width:40px;height:40px;
+          border:4px solid #ddd;
+          border-top:4px solid #333;
+          border-radius:50%;
+          animation:spin 1s linear infinite;
+          margin-bottom:10px;
+        "></div>
+        <span>${message}</span>
+      </div>
+    `;
+  }
+
+  // Auto ikut device:
+  // phone = mobile.html
+  // desktop/laptop = desktop.html
+  document.getElementById("goDashboard").onclick = () => {
+    showSpinner("Opening Dashboard...");
+    setTimeout(() => goDashboard(), 200);
+  };
+
+  document.getElementById("goMonitor").onclick = () => {
+    showSpinner("Opening Monitor...");
+    setTimeout(() => goPage("monitor.html"), 200);
+  };
+
+  document.getElementById("goAdmin").onclick = () => {
+    showSpinner("Opening Admin...");
+    setTimeout(() => goPage("admin.html"), 200);
+  };
+
+  document.getElementById("goCancel").onclick = () => {
+    const box = document.getElementById("choiceBox");
+    if (box) box.innerHTML = "Exiting...";
+    logout();
+  };
+}
+
+function ensureChoiceStyle() {
+  if (document.getElementById("choiceStyle")) return;
+
+  const style = document.createElement("style");
+  style.id = "choiceStyle";
+
+  style.innerHTML = `
+    .choiceBtn {
+      width:100%;
+      padding:12px;
+      font-size:15px;
+      border:none;
+      border-radius:20px;
+      background: linear-gradient(135deg, #6f42c1, #e83e8c);
+      color:#fff;
+      cursor:pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .choiceBtn:hover {
+      opacity: 0.9;
+    }
+
+    .cancelBtn {
+      width:100%;
+      margin-top:15px;
+      padding:10px;
+      border:none;
+      border-radius:20px;
+      background:#f1f3f5;
+      color:#555;
+      cursor:pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cancelBtn:hover {
+      opacity: 0.9;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+function logout() {
+  const token = localStorage.getItem("sessionToken");
+
+  fetch(`${cleanApiBase()}/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      token
+    })
+  })
+    .catch(err => {
+      console.log("LOGOUT ERROR:", err);
+    })
+    .finally(() => {
+      localStorage.clear();
+      window.location.replace("index.html");
+    });
+}
+</script>
+</body>
+</html>

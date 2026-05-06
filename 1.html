@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <style>
+    /* Set the background color for the entire page */
+    body {
+      background-color: #E8ECEF; /* Change to your preferred color */
+      font-family: "Helvetica Neue", sans-serif, Arial;
+    }
+
+    .logout-button {
+      position: absolute;
+      top: -40px;
+      right: -5px;
+    }
+
+.toggle-btn {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 14px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50; /* hijau bila ON */
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.off {
+  background-color: #9E9E9E; /* kelabu bila OFF */
+  color: white;
+}
+
+.toggle-btn i {
+  font-size: 20px;
+}
+
+    .form-container {
+      margin-top: 5px;
+      position: relative;
+    }
+    .search-wrapper {
+      position: relative;
+      width: 350px;
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      padding-right: 60px; /* bagi ruang untuk butang kat kanan */
+    }
+    #searchButton {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 50px;
+      background-color: #455A64;
+      color: #ffffff;
+      font-size: 16px;
+      border: none;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      cursor: pointer;
+    }
+    #searchButton:hover {
+      background-color: #1C313A;
+    }
+        /* State disable */
+       #searchButton:disabled {
+         background-color: #455A64; /* sama macam normal */
+         color: #ffffff;
+         cursor: not-allowed;
+         opacity: 1;
+       }
+
+
+.clear-button2 {
+  display: none; /* Mula-mula sembunyi */
+  position: absolute;
+  width: 120%;
+  top: 55px; /* Jarak bawah dari atas form (boleh adjust) */
+  right: 10px;
+  text-align: right;
+  z-index: 1;
+}
+
+.icon-clear-button2 {
+  font-size: 16px;
+  width: 80px;
+  height: 35px;
+  padding: 5px;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #455A64;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.icon-clear-button2:hover {
+  background-color: #1C313A;
+}
+
+.counter {
+  position: absolute;
+  font-size: 14px;
+  font-style: italic;
+  top: 100px;
+  right: 15px;
+  text-align: right;
+  padding-left: 10px; /* Jarak dari tepi kiri */
+  z-index: 10;
+}
+
+.right-panel {
+  background: white;
+  overflow-y: auto;
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.result-container.scroll-mode {
+  justify-content: flex-start;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+
+/* BASE */
+.result-box {
+  font-size: 16px;
+  white-space: pre-wrap;
+  margin: 0 auto;
+}
+.result-box.list-view {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.result-box.grid-view {
+  width: 100%;
+  padding: 0 20px;
+
+  display: grid;
+  gap: 10px;
+
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+
+  justify-content: center;
+}
+/* LIST MODE */
+.result-box.list-view .result-item {
+  width: 100%;
+}
+
+/* GRID MODE */
+.result-box.grid-view .result-item {
+  width: 100%;
+  max-width: 320px;
+}
+
+
+.result-item {
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* category */
+.result-item .category {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* bib row */
+.result-item .bib {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* bib number */
+.result-item .bib-number {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* size */
+.result-item .bib-size {
+  font-size: 22px;
+  color: #555;
+}
+
+/* name */
+.result-item .name {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.collected-info {
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.collected-info div {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.result-item.selected {
+  border: 2px solid #28a745;
+  background: #eaf7ee;
+}
+
+.floating-select {
+  position: fixed;
+  bottom: 50px;
+  left: 270px;
+//  transform: translateX(-70%);
+  padding: 12px 22px;
+  border-radius: 30px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  z-index: 999;
+  display: none;
+}
+
+/* DARK MODE */
+body.dark-mode .result-item {
+  border: 1px solid rgba(255,255,255,0.3); /* border cerah dalam dark mode */
+  color: #000000; /* teks terang dalam dark mode */
+}
+  
+    .collect-box {
+      margin-top: 70px;
+      display: none;
+    }
+/*
+    .collect-button {
+      width: 330px;
+      height: 35px;
+      font-size: 16px;
+      padding: 5px;
+      background-color: #007bff; /* #455A64; // green; 
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none; /* Initially hidden 
+      transition: background-color 0.3s ease; /* Smooth transition for hover effect 
+    }
+    .collect-button:hover {
+      background-color: #1C313A; /* Hover background color 
+    }
+    .collect-button:disabled {
+      background-color: #9E9E9E; /* Grey 
+      cursor: not-allowed;
+      opacity: 0.8;
+    } */
+
+    .collect-button {
+      min-width: 150px;
+      height: 35px;
+      font-size: 16px;
+      padding: 5px;
+      background-color: #007bff; /* #455A64; // green; */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none; /* Initially hidden */
+      transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    }
+    .collect-button:hover {
+      background-color: #1C313A; /* Hover background color */
+    }
+    .collect-button:disabled {
+      background-color: #9E9E9E; /* Grey */
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+    .collect-button-wrapper {
+      display: flex;
+      gap: 20px; /* hanya jarak antara HOLD & COLLECT */
+      justify-content: center;
+    }
+    #holdButton {
+      min-width: 90px;   /* HOLD jadi pendek */
+    }
+    #collectButton {
+      min-width: 220px;  /* COLLECT jadi panjang */
+    }
+
+
+#message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  display: none; /* 🚨 default sembunyi */
+}
+
+    .status-box {
+      position: absolute; //relative;
+      font-size: 20px;
+      font-weight: bold;
+      width: 340px;
+      border: 1px solid #455A64;
+      background: white;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* Initially hidden */
+
+      /* Centering styles */
+      top: 145px; /* Adjusted from 180px */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+    }
+    .status-box p {
+      margin: 0; /* Remove the default top/bottom margin of the <p> tag */
+      font-size: 25px;
+    }
+    .ok-button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: lightgrey;
+      color: #455A64;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .ok-button:hover {
+      background-color: #ccc;
+    }
+
+
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px; /* jarak dari search box */
+}
+
+.dropdown-container select {
+  background-color: #455A64;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  height: 35px;
+}
+
+.showCollectedbutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #455A64;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.showCollectedbutton:hover {
+  background-color: #1C313A;
+}
+
+.walkinButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #455A64; /* sama style button lain */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.walkinButton:hover {
+  background-color: #1C313A;
+}
+
+
+    h1 {
+      font-size: 40px; // header text
+    }
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.desktop-container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel {
+  width: 400px;
+  background-color: #E8ECEF;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;  /* susun menegak */
+  height: 100vh;           /* penuh ketinggian skrin */
+}
+
+/* ===== HOLD MODAL ===== */
+.hold-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15); /* ringan, bukan hitam */
+  z-index: 9999;
+  justify-content: center;
+  align-items: flex-start; /* modal turun sikit dari top */
+  padding-top: 80px; /* jarak dari atas */
+}
+
+.hold-modal-box {
+  position: relative; /* untuk X button */
+  background: #ffffff;
+  width: 92%;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  padding: 16px;
+  color: #222;
+  margin: 0 10px; /* padding kiri kanan untuk mobile */
+  box-sizing: border-box;
+}
+
+/* Optional responsive tweak */
+@media screen and (max-width: 480px) {
+  .hold-modal-box {
+    width: auto; /* biar penuh lebar minus margin */
+    margin: 0 16px; /* jarak kiri kanan di mobile */
+  }
+}
+
+/* ===== HEADER ===== */
+.hold-modal-header {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+  color: #263238;
+}
+
+/* ===== GRID DISPLAY ===== */
+.hold-grid {
+  display: flex;
+  flex-direction: column; /* baris ke bawah */
+  gap: 8px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Setiap item dalam grid */
+.hold-item {
+  display: block; /* ❗ buang grid */
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f7f7f7;
+  border: 1px solid #e0e0e0;
+}
+
+.hold-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ===== ITEM TEXT ===== */
+.hold-name {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.hold-bib {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+}
+
+.hold-size {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.hold-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  gap: 10px; /* gap antara button */
+}
+
+.btn-cancel {
+  flex: 1;
+  background: #B0BEC5;
+  border: none;
+  padding: 10px 0;
+  border-radius: 6px;
+  color: #000;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-collect {
+  flex: 1;
+  background: #4CAF50;
+  border: none;
+  padding: 10px 0;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Optional hover effect */
+.btn-cancel:hover {
+  background: #90A4AE;
+}
+
+.btn-collect:hover {
+  background: #43A047;
+}
+
+/* ===== CLOSE BUTTON ===== */
+.hold-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-weight: bold;
+}
+.hold-modal-close:hover {
+  color: #000;
+}
+
+  </style>
+
+  <style>
+
+.top-toggle-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* atau gap je kalau nak rapat */
+  margin-top: 10px;
+}
+
+/* buang absolute */
+.dark-toggle-btn {
+  position: static; /* penting */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* optional spacing kalau nak rapat */
+.top-toggle-bar {
+  gap: 10px;
+}
+
+/* Icon color ikut mode */
+.dark-toggle-btn i {
+  color: #202123; /* gelap untuk light mode */
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+body.dark-mode .dark-toggle-btn i {
+  color: #e4e6eb; /* terang dalam dark mode */
+}
+
+/* Hover effect lembut */
+.dark-toggle-btn:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.view-toggle button {
+  border: none;
+  background: #f1f1f1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.view-toggle button.active {
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  transform: translateY(1px);
+}
+
+    .spin {
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+
+/* ===== WALKIN BOX (IMPROVED) ===== */
+.walkin-box {
+  position: fixed;
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 320px;
+  max-width: 90%;
+
+  background: #ffffff;
+  border: 1px solid #455A64;
+  border-radius: 14px;
+
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  display: none;
+  z-index: 1000;
+
+  text-align: center; /* 🔥 CENTER CONTENT */
+}
+
+/* Title */
+.walkin-box h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* Close button */
+.walkin-box .close {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Inputs */
+.walkin-box input {
+  width: 90%;
+  margin: 6px auto;
+  display: block;
+
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Bib + Chip row */
+.bib-chip-row {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.bib-chip-row input {
+  width: 130px;
+}
+
+/* Radio section */
+.walkin-box label {
+  font-size: 14px;
+}
+
+/* Buttons */
+.walkin-box button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Button row */
+.walkin-box .btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* QR image */
+#walkinQR {
+  width: 200px;
+  max-width: 100%;
+  display: block;
+  margin: 15px auto;
+}
+
+/* Loader */
+#walkinLoader {
+  margin-top: 15px;
+}
+
+    .spin {
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  align-items: center;   /* 🔥 center semua card */
+}
+
+.card-item {
+  width: 85%;            /* 🔥 kecilkan lebar */
+  max-width: 280px;      /* 🔥 limit supaya tak besar sangat */
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-item .label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.card-item .value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.card-item.collected {
+  background: #eaf7ee;
+  color: #28a745;
+}
+
+.card-item.uncollected {
+  background: #fff3cd;
+  color: #856404;
+}
+</style>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    #logoutMenu {
+      display: none;
+      position: fixed;
+      top: 40px;
+      left: 200px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      min-width: 180px;
+      overflow: hidden;
+    }
+
+    #logoutMenu div:hover {
+      background: #f5f5f5;
+    }
+
+    .menu-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item.logout {
+      color: red;
+    }
+/* Overlay full screen */
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: none;
+  justify-content: center; align-items: center;
+  z-index: 9999;
+}
+
+    .spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Spinner besar untuk global loader sahaja */
+#globalSpinner .spin {
+  font-size: 40px;
+  color: white;
+}
+
+/* Spinner kecil dalam button */
+.btn-spin {
+  font-size: 16px;
+  color: white;
+  line-height: 1;
+}
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #globalSpinner {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      pointer-events: all;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    #globalSpinner i {
+      font-size: 50px;
+    }
+
+    #uiBlocker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: transparent;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0d6efd;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 0.8s linear infinite;
+      margin: auto;
+    }
+
+    
+
+</style>
+
+  <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+
+</head>
+<body>
+  <div id="uiBlocker"></div>
+<div id="globalSpinner">
+    <i class="bi bi-arrow-repeat spin"></i>
+</div>
+
+  <div id="logoutMenu">
+    <div id="monitorBtn" class="menu-item" onclick="goMonitor()">
+      Monitor
+    </div>
+
+    <div id="adminBtn" class="menu-item" onclick="goAdmin()">
+      Admin
+    </div>
+
+    <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">
+      Logout
+    </div>
+  </div>
+  <!----------------------------------------
+    - - - - - - - BODY SECTION - - - - - - -
+  ------------------------------------------>
+
+
+
+<center>
+    
+<div class="desktop-container">
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+<div style="background-color: lightgrey; display: flex; justify-content: space-between; align-items: center; height: 30px; padding: 0 10px;">
+  <div class="profile-display" id="profileNameDisplay" style="font-size: 18px; color:#455A64; font-weight: bold;">
+    <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
+  </div>
+  <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
+    <i class="bi bi-box-arrow-right" style="font-size: 22px"></i>
+  </button>
+</div>
+
+<div class="top-toggle-bar">
+  <!--  <button class="dark-toggle-btn" onclick="toggleDarkMode()">
+    <i class="bi bi-moon-fill"></i>
+  </button> -->
+  <button id="printToggle" onclick="togglePrint()" class="toggle-btn off">
+    <i id="printIcon" class="bi bi-toggle-off"></i> Print: <b>OFF</b>
+  </button>
+</div>
+
+<center>
+
+ <!-- <img src="https://appfyrus.pages.dev/media/fyrpclogo2.png" alt="Logo" width="350"> -->
+  <h1 id="secretSummaryTap" style="font-size:30px; font-style: italic; cursor:pointer; user-select:none;">
+  FyRPC
+</h1>
+  </center>
+
+    <!-- Search -->
+    <form style="text-align: left; display: inline-block; position: relative;">
+      <div class="search-wrapper">
+        <input type="text" id="searchTerm" class="search-box" placeholder="Reg ID, MyKad or Name" onkeydown="handleEnter(event)">
+        <button type="button" id="searchButton" onclick="search()"><i class="bi bi-search"></i></button>
+      </div>
+      <div id="clearButtonContainer" class="clear-button2">
+        <button type="button" onclick="clearSearch()" class="icon-clear-button2">
+          <i class="bi bi-eraser-fill"></i> Clear
+        </button>
+      </div>
+        <div id="resultCount" class="counter"></div>
+    </form>
+
+    <!-- Dropdown + ShowCollectedButton -->
+<div class="search-controls">
+  <div class="dropdown-container">
+    <select id="searchOption" onchange="updatePlaceholder()">
+      <option value="DEFAULT">IC/ID/Name</option>
+      <option value="A">Team</option>
+      <option value="E">Email</option>
+      <option value="F">BIB no</option>
+      <option value="G">Collected</option>
+    </select>
+  </div>
+  <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
+  <i class="bi bi-cart-plus" style="font-size: 20px;"></i>
+</button>
+<!--  <button id="showCollected" class="showCollectedbutton" onclick="showCollectedStatus()">
+    <i id="showCollectedIcon" class="bi bi-journal-text" style="font-size: 20px;"></i>
+  </button> -->
+
+  <!-- ON HOLD button (hidden by default) -->
+<div id="onHoldContainer" style="display:none; position: relative; z-index: 2;">
+<button
+  type="button"
+  id="onHoldButton"
+  onclick="openHoldModal()"
+  style="
+    font-size:13px;
+    font-weight: bold;
+    padding:4px 8px;
+    border-radius:5px;
+    background:#ffc107;
+    border:1px solid #ffe69c;
+    cursor:pointer;
+    height: 35px;
+    display: flex;
+    align-items: center;
+  "
+>(0)</button>
+
+</div>
+
+</div>
+
+    <!-- Collect -->
+    <div id="collectBoxes" class="collect-box">
+      collect by 
+      <input type="text" id="collectBy1" placeholder="Name" style="width: 100px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '');">
+      <input type="tel" id="collectBy2" placeholder="Phone Number" style="width: 100px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+      <br><br>
+  <!-- wrapper untuk button -->
+  <div class="collect-button-wrapper">
+    <input type="button" id="holdButton" value="Hold" onclick="holdSelection()" class="collect-button" style="background:#FF9800;">
+    <input type="button" id="collectButton" value="Collect" onclick="collect()" class="collect-button">
+  </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+<div class="right-panel">
+
+<div class="view-toggle">
+  <button id="listViewBtn" onclick="setView('list')">
+    <i class="bi bi-list"></i>
+  </button>
+  <button id="gridViewBtn" onclick="setView('grid')">
+    <i class="bi bi-grid"></i>
+  </button>
+</div>
+
+      <div id="message"></div>
+  <div class="result-container">
+    <div id="result" class="result-box" style="text-align: left;"></div>
+  </div>
+  <button id="selectAllBtn" class="floating-select">Select All</button>
+
+  <div id="collectedStatusContainer" class="status-box">
+    <div id="collectedStatus"></div>
+    <br>
+    <button id="okButton" class="ok-button" onclick="dismissCollectedStatus()" style="color: white; background: #455A64;">OK</button>
+  </div>
+
+<div id="holdModal" class="hold-modal">
+  <div class="hold-modal-box">
+    <div class="hold-modal-header">
+      <b>HOLD ITEMS</b>
+      <button class="hold-modal-close" onclick="closeHoldModal()">&times;</button>
+    </div>
+
+    <div id="holdList" class="hold-grid"></div>
+
+    <div id="holdActions" class="hold-modal-actions">
+      <button id="modalRemoveBtn" onclick="removeHold()" class="btn-cancel">REMOVE</button>
+      <button id="modalCollectBtn" onclick="collectHold()" class="btn-collect">COLLECT</button>
+      <button id="modalOkBtn" onclick="closeHoldModal()" class="btn-collect" style="display:none;">OK</button>
+    </div>
+
+    <div id="holdCollectedMsg" style="display:none; text-align:center; margin-top:12px; font-weight:600; color:#4CAF50;">
+      COLLECTED
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+    <!-- WALKIN FORM -->
+    <div id="walkinFormBox" class="walkin-box">
+        <span class="close" onclick="closeWalkinForm()">&times;</span>
+        <h3>Add New Runner</h3>
+
+        <div id="walkinFields">
+        <input type="tel" id="walkinIC" placeholder="No IC" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+        <input type="text" id="walkinName" placeholder="Name" style="text-transform: uppercase; margin-top: 10px;" />
+        <input type="tel" id="walkinContact" placeholder="Contact" style="margin-top: 10px;"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+
+        <div class="bib-chip-row">
+            <input type="text" id="walkinBib" placeholder="BIB No"
+                   oninput="this.value=this.value.toUpperCase().replace(/[^0-9ABCDEFGKS/() ]/g,'')" />
+            <input type="tel" id="walkinChip" placeholder="Chip No"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+        </div>
+
+        <input type="text" id="walkinEmer" placeholder="Emergency Name / Phone"
+               style="margin-top: 10px;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9/ ]/g,'')" />
+
+        <div style="margin-top:20px;">
+           <label style="font-weight:600; display:block; margin-bottom:4px;">Category:</label>
+
+           <select id="walkinDistance" style="width:92%; padding:6px; border-radius:6px; border:1px solid #ccc; text-align:center; font-size:14px;">
+                <option>Loading...</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="walkinError" style="color:red; font-weight:bold; display:none; margin-top:5px; margin-bottom: 5px;"></div>
+
+        <div id="confirmPreview" style="display:none; text-align:center; margin-bottom:15px;">
+            <div style="font-weight:bold; margin-bottom:8px;">ADD THIS RUNNER?</div>
+            <div>NAME: <b id="previewName"></b></div>
+            <div style="font-size:22px; margin-top:5px;">BIB: <b id="previewBib"></b></div>
+        </div>
+
+                <br>
+
+        <div class="btn-row">
+            <button id="walkinSubmitBtn" onclick="submitWalkinForm()">SUBMIT</button>
+            <button onclick="handleCancel()">CANCEL</button>
+        </div>
+
+<!--        <img id="walkinQR"
+             src="https://raw.githubusercontent.com/fyrus7/rpc_config/main/tngQR.png"
+             alt="QR Code"
+             style="width:230px;max-width:100%;display:block;margin:15px auto;" />
+-->
+        <div id="walkinLoader" style="display:none; text-align:center; margin-top:15px;">
+            <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:#000;"></i>
+        </div>
+    </div>
+
+    <div id="successBox" class="walkin-box" style="display:none;">
+        <h3>Successfull Added</h3>
+        <p><b><span id="successBib" style="font-size:40px;"></span></b></p>
+        <p><b><span id="successName" style="font-size:20px;"></span></b></p>
+        <br>
+        <button onclick="closeSuccessBox()">OK</button>
+    </div>
+
+
+<div id="overlay">
+  <i class="bi bi-arrow-repeat spin"></i>
+</div>
+
+  <!----------------------------------------
+    - - - - - - - BODY SECTION - - - - - - -
+  ------------------------------------------>
+
+  <audio id="markSound" src="Sound/collected.mp3"></audio>
+  <audio id="warnSound" src="Sound/warning.mp3"></audio>
+  <audio id="successSound" src="Sound/tada.mp3"></audio>
+
+  <script src="config.js"></script>
+
+  <script>
+  function setView(mode) {
+  const box = document.querySelector(".result-box");
+  const listBtn = document.getElementById("listViewBtn");
+  const gridBtn = document.getElementById("gridViewBtn");
+
+  if (!box) return;
+
+  box.classList.remove("list-view", "grid-view");
+
+  if (mode === "grid") {
+    box.classList.add("grid-view");
+    gridBtn.classList.add("active");
+    listBtn.classList.remove("active");
+  } else {
+    box.classList.add("list-view");
+    listBtn.classList.add("active");
+    gridBtn.classList.remove("active");
+  }
+
+  localStorage.setItem("viewMode", mode);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("viewMode") || "list";
+  setView(saved);
+});
+
+
+    function cleanApiBase() {
+      return String(WORKER_API || "").replace(/\/+$/, "");
+    }
+
+    async function apiJson(path, options = {}) {
+      const res = await fetch(`${cleanApiBase()}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+
+      const raw = await res.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        throw new Error(raw || `HTTP ${res.status}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      return data;
+    }
+
+    function showLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "flex";
+      }
+
+      blockUI(true);
+    }
+
+    function hideLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "none";
+      }
+
+      blockUI(false);
+    }
+
+    function blockUI(state) {
+      const blocker = document.getElementById("uiBlocker");
+
+      if (blocker) {
+        blocker.style.display = state ? "block" : "none";
+      }
+    }
+
+    function setAllButtonsDisabled(state) {
+      document
+        .querySelectorAll("button, input[type=button]")
+        .forEach(btn => {
+          btn.disabled = state;
+        });
+    }
+
+    function isMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+      return (
+        /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+        window.innerWidth <= 768 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    }
+
+
+    function requireLogin() {
+      const token = localStorage.getItem("sessionToken");
+      const profile = localStorage.getItem("userProfile");
+
+      if (!token || !profile) {
+        window.location.replace("index.html");
+        return false;
+      }
+
+      document.getElementById("userProfile").textContent =
+        profile.toUpperCase();
+
+      apiJson("/validate", {
+        method: "POST",
+        body: JSON.stringify({ token })
+      })
+        .then(response => {
+          if (!response.valid) {
+            localStorage.clear();
+            window.location.replace("index.html");
+          }
+        })
+        .catch(err => {
+          console.log("VALIDATE ERROR:", err);
+        });
+
+      return true;
+    }
+
+
+    function handleLogoutClick() {
+      const role = (localStorage.getItem("userProfile") || "").toLowerCase();
+
+      if (role === "admin" || role === "mod") {
+        openLogoutMenu();
+      } else {
+        logout();
+      }
+    }
+
+    function openLogoutMenu() {
+      const menu = document.getElementById("logoutMenu");
+
+      if (!menu) return;
+
+      menu.style.display =
+        menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", event => {
+      const menu = document.getElementById("logoutMenu");
+      const btn = document.getElementById("logoutBtn");
+
+      if (!menu || !btn) return;
+
+      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        menu.style.display = "none";
+      }
+    });
+
+
+    function goMonitor() {
+      const btn = document.getElementById("monitorBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "monitor.html";
+    }
+
+    function goAdmin() {
+      const btn = document.getElementById("adminBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "admin.html";
+    }
+
+    
+    async function logout() {
+      setAllButtonsDisabled(true);
+
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (logoutBtn && logoutBtn.offsetParent !== null) {
+        logoutBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      const token = localStorage.getItem("sessionToken");
+
+      try {
+        if (token) {
+          await apiJson("/logout", {
+            method: "POST",
+            body: JSON.stringify({ token })
+          });
+        }
+
+      } catch (err) {
+        console.log("LOGOUT ERROR:", err);
+
+      } finally {
+        localStorage.clear();
+        window.location.replace("index.html");
+      }
+    }
+
+function logoutFromMenu() {
+  const btn = document.getElementById("logoutMenuBtn");
+  const adminBtn = document.getElementById("adminBtn");
+  const monitorBtn = document.getElementById("monitorBtn");
+
+  [dashboardBtn, monitorBtn, btn].forEach(el => {
+    if (el) {
+      el.style.pointerEvents = "none";
+      el.style.opacity = "0.6";
+    }
+  });
+
+  if (btn) {
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+  }
+
+  // 🔥 force render frame sebelum logout jalan
+  setTimeout(() => {
+    logout();
+  }, 50);
+}
+</script>
+
+  <script src="shared.js"></script>
+
+</body>
+</html>

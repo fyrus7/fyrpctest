@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+<style>
+
+        * {
+          box-sizing: border-box;
+        }
+        /* Set the background color for the entire page */
+        body {
+          background-color: #f7f8fa; /* Change to your preferred color */
+          font-family: "Helvetica Neue", sans-serif, Arial;
+          padding-bottom: 80px;
+          overflow-y: auto;
+          padding-top: 0;
+          margin-top:50px;
+        }
+
+
+        #uiBlocker {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: transparent; /* boleh tukar rgba kalau nak gelap sikit */
+          z-index: 9999;
+          display: none;
+        }
+
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+        /* text dalam header */
+        .top-header #profileNameDisplay {
+          color: white !important;
+          font-size: 14px;
+        }
+
+        #profileNameDisplay {
+          color: white !important;
+        }
+
+        /* logout icon */
+        #logoutBtn {
+          color: white !important;
+        }
+
+        .search-box {
+          width: 100%;
+          padding: 12px 15px;
+          font-size: 15px;
+          box-sizing: border-box;
+          padding-right: 60px;
+
+          border-radius: 30px;
+          border: 1px solid #e0e0e0;
+
+          background: #fff;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .search-box:focus {
+          border-color: #e83e8c;
+          box-shadow: 0 4px 16px rgba(232,62,140,0.2);
+        }
+
+            #searchButton {
+              position: absolute;
+              top: 0;
+              right: 0;
+              height: 100%;
+              width: 50px;
+              background: linear-gradient(135deg, #6f42c1, #e83e8c);
+              color: #ffffff;
+              font-size: 16px;
+              border: none;
+              border-top-right-radius: 25px;
+              border-bottom-right-radius: 25px;
+              cursor: pointer;
+            }
+            #searchButton:hover {
+          opacity: 0.9;
+        }
+
+/* HOLD mode adjustment */
+.search-box.with-hold {
+  padding-left: 55px; /* 🔥 tambah ruang kiri bila ada hold */
+}
+
+#onHoldContainer {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+#onHoldButton {
+  height: 28px;
+  padding: 0 8px;
+  font-size: 14px;
+  border-radius: 12px;
+  background: #ffc107;
+  border: 1px solid #ffe69c;
+  display: flex;
+  align-items: center;
+}
+/*
+        #footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 70px;
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+          z-index: 1000;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          padding-top: 10px;
+        }
+*/
+
+#footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:46px;
+  background:linear-gradient(135deg,#6f42c1,#e83e8c);
+  display:flex;
+  justify-content:center;
+  align-items: flex-start;
+  z-index:1000;
+  padding-top: 6px;
+}
+/* container 2 button */
+.dropdown-container{
+  display:flex;
+  align-items:flex-start;
+  gap: 150px;
+}
+
+.dropdown-btn,
+.walkinButton{
+  width:100px;
+  height:30px;
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,.2);
+  color:#fff;
+}
+
+
+        .floating-button-wrapper {
+          position: absolute;
+
+          top: -15px;              /* 🔥 naik atas footer */
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        #startButton {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          color: #e83e8c;
+          font-size: 22px;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+        #startButton i {
+          font-size: 26px;
+        }
+
+        #searchOption {
+          appearance: none;
+          background-color: transparent;
+          color: #fff;
+          padding: 0 15px;
+          border: none;
+          background: rgba(255,255,255,0.2);
+          border-radius: 20px;
+          font-size: 16px;
+          cursor: pointer;
+          height: 30px;
+          line-height: normal;
+          display: inline-block;
+          width: auto;
+          }
+        #searchOption option {
+          color: #000;
+        }
+        #searchOption:focus {
+           outline: none;
+           box-shadow: 0 0 0 0.2rem rgba(28, 49, 58, 0.5);
+        }
+        #searchButton:disabled {
+          background-color: #455A64; /* sama macam normal */
+          color: #ffffff;
+          cursor: not-allowed;
+          opacity: 1;
+        }
+
+
+        .result-item {
+        text-align: left;
+          border: none;
+          border-radius: 14px;
+          padding: 14px;
+          background: #fff;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          transition: all 0.2s ease;
+        }
+
+        .result-item.selected {
+          border: 2px solid #28a745;
+          background: #eaf7ee;
+        }
+
+        /* category */
+        .result-item .category {
+          font-size: 13px;
+          color: #666;
+          font-weight: 600;
+        }
+
+        /* bib row */
+        .result-item .bib {
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
+        }
+
+        /* bib number */
+        .result-item .bib-number {
+          font-size: 38px;
+          font-weight: 800;
+          line-height: 1;
+          color: #6f42c1;
+        }
+
+        /* name */
+        .result-item .name {
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #333;
+          letter-spacing: 0.5px;
+        }
+
+        /* size */
+        .result-item .bib-size {
+          font-size: 22px;
+          color: #555;
+          font-weight: 600;
+        }
+
+        .collect-box {
+          position: fixed;
+          left: 50%;
+          transform: translateX(-50%);     
+          bottom: 29px; /* sikit atas footer */
+          width: 100%;
+          height:95px;
+          background: #ffffff;
+          border-top-right-radius: 30px;
+          border-top-left-radius: 30px;
+          padding: 10px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+          z-index: 999;
+          display: none;
+        }
+
+        .collect-box .collect-button {
+        /*  width: calc(100% - 20px); */
+          margin-top: 10px;
+        /*  height: 35px; */
+        }
+
+        .collect-button-wrapper {
+          display: flex;
+          gap: 40px;
+          justify-content: center;
+        }
+
+        .collect-button {
+          flex: 1;
+          max-width: 150px;
+          height: 35px;
+          font-size: 16px;
+          padding: 5px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+          display: none;
+        }
+        .collect-button:disabled {
+          background-color: #9E9E9E; /* Grey */
+          cursor: not-allowed;
+          opacity: 0.8;
+        }
+        #holdButton {
+          min-width: 90px;
+          background: #ffc107;
+          color: #333;
+        }
+
+        .clear-button {
+          display: none;
+
+          position: absolute;
+          width: 100%;
+          top: 55px;   /* ✅ kekal */
+          left: 0;
+          text-align: center;
+          z-index: 10;
+        }
+
+        /* floating state */
+        .clear-button.floating {
+          position: fixed;
+          top: 40px;   /* 🔥 naik lagi rapat ke atas */
+          left: 50%;
+          transform: translateX(-50%);
+          width: auto;
+          z-index: 1000;
+        }
+
+        .icon-clear-button {
+          font-size: 13px;
+          width: 130px;
+          height: 32px;
+          padding: 5px;
+
+          cursor: pointer;
+
+          color: white;
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+
+          border-radius: 20px;
+          border: none;
+
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+          transition: all 0.2s ease;
+        }
+        .icon-clear-button:hover {
+          opacity: 0.9;
+        }
+
+        #collectBy1,
+        #collectBy2 {
+          height: 20px !important;
+          padding: 3px 8px !important;
+
+          border-radius: 14px;
+          border: 1px solid #ddd;
+
+          font-size: 12px;
+
+          outline: none;
+
+          transition: all 0.2s ease;
+        }
+
+        #collectBy1:focus,
+        #collectBy2:focus {
+          border-color: #e83e8c;
+          box-shadow: 0 2px 8px rgba(232,62,140,0.2);
+        }
+
+        .counter {
+          position: absolute;
+          font-size: 14px;
+          font-style: italic;
+          top: 80px;
+          left: 0; /* Terus di kiri container */
+          text-align: left;
+          padding-left: 10px; /* Jarak dari tepi kiri */
+          z-index: 10;
+        }
+        .collect-input {
+          width: 100px;
+          height: 24px;
+          font-size: 12px;
+          padding: 3px 8px;
+          margin-left: 5px;
+          border-radius: 14px;
+          border: 1px solid #ddd;
+          outline: none;
+          transition: all 0.2s ease;
+        }
+        .collect-input:focus {
+          border-color: #e83e8c;
+          box-shadow: 0 2px 6px rgba(232,62,140,0.2);
+        }
+
+        .hold-btn {
+          background: #ffc107;
+          color: #333;
+        }
+
+        .floating-select {
+          position: fixed;
+          bottom: 130px;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 10px 20px;
+          border-radius: 30px;
+          border: none;
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+          color: #fff;
+          font-weight: 600;
+          font-size: 10px;
+          box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+          z-index: 999;
+          display: none;
+        }
+        .floating-select:hover {
+          opacity: 0.9;
+        }
+
+        .result-box {
+          margin: 65px auto 0;
+          width: 100%;
+          max-width: 345px;
+
+          display: flex;
+          flex-direction: column;
+          row-gap: 10px;
+        }
+
+
+        /**********************/
+
+
+        /* Modal Styles 
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 10000;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+          position: relative;
+          height: 100%;
+        }
+
+        .modal-body {
+          text-align: center;
+         // height: calc(100% - 60px);
+          padding-top: 60px;
+        }
+
+        .back-button {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #fff;
+          font-size: 18px;
+          padding-top: 10px;
+          z-index: 1001;
+        }
+
+            .torchToggle {
+              position: absolute;
+              top: 70px;
+              left: 50%;
+              transform: translateX(-50%);
+              z-index: 9999;
+              display: none;
+              width: 150px;
+              height: 45px;
+              cursor: pointer;
+              background-color: transparent;
+              color: white; // #455A64;
+              border: none; // solid 0.5px white; // #455A64;
+              border-radius: 5px;
+            } */
+
+
+/* QR Scanner Modal */
+.modal {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  background: #000;
+  z-index: 10000;
+  text-align: left;
+}
+
+.modal-content {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.modal-body {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 100px;
+  margin: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+#reader {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#reader video {
+  width: 100vw !important;
+  height: calc(100dvh - 60px) !important;
+  object-fit: cover !important;
+}
+
+.back-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 18px;
+  padding-bottom: 10px;
+  z-index: 10001;
+}
+
+.torchToggle {
+  position: absolute;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  display: none;
+  width: 150px;
+  height: 45px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+   
+
+            .form-container {
+              margin-top: 5px;
+              position: relative;
+            }
+            .search-wrapper {
+              position: relative;
+              width: 350px;
+            }
+
+
+        .collected-info {
+          margin-top: 2px;
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+        }
+
+        .collected-info div {
+          font-size: 13px;
+          line-height: 1;
+        }
+
+        #message {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 9999;
+          display: none; /* 🚨 default sembunyi */
+        }
+
+        .status-box {
+          position: fixed; /* 🔥 tukar dari absolute */
+          top:34%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 90%;
+          max-width: 320px;
+          font-size: 18px;
+          font-weight: bold;
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+          display: none;
+          z-index: 9999;
+          text-align: center;
+        }
+        .status-box p {
+          margin: 0;
+          font-size: 20px;
+        }
+        .ok-button {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          padding: 6px 16px;
+          border: none;
+          border-radius: 20px;
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+          color: white;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+          transition: all 0.2s ease;
+        }
+        .ok-button:hover {
+          opacity: 0.9;
+        }
+
+        /* hide footer semasa modal on */
+        .hide-footer {
+          display: none !important;
+        }
+/*
+            .dropdown-container {
+              position: absolute;
+              right: 50%;
+              transform: translateX(-65px);
+            }
+*/
+        /* Terapung kiri sikit dari tengah */
+        .showCollectedbutton {
+          position: absolute;
+          right: 10px;
+          background-color: transparent; //#007bff;
+          color: white;
+          border: none;
+          padding: 5px;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+        }
+/*
+        .walkinButton {
+          position: absolute;
+          right: 50px;
+          background-color: transparent;
+          color: white;
+          border: none;
+          padding: 5px;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+        }
+*/
+
+        /* ===== HOLD MODAL ===== */
+        .hold-modal {
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.15); /* ringan, bukan hitam */
+          z-index: 9999;
+          justify-content: center;
+          align-items: flex-start; /* modal turun sikit dari top */
+          padding-top: 80px; /* jarak dari atas */
+        }
+
+        .hold-modal-box {
+          position: relative; /* untuk X button */
+          background: #ffffff;
+          width: 92%;
+          max-width: 420px;
+          border-radius: 14px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+          padding: 16px;
+          color: #222;
+          margin: 0 10px; /* padding kiri kanan untuk mobile */
+          box-sizing: border-box;
+        }
+
+        /* ===== HEADER ===== */
+        .hold-modal-header {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 12px;
+          text-align: center;
+          color: #263238;
+        }
+
+        /* ===== GRID DISPLAY ===== */
+        .hold-grid {
+          display: flex;
+          flex-direction: column; /* baris ke bawah */
+          gap: 8px;
+          max-height: 50vh;
+          overflow-y: auto;
+        }
+
+        /* Setiap item dalam grid */
+        .hold-item {
+          display: block; /* ❗ buang grid */
+          padding: 10px 12px;
+          border-radius: 8px;
+          background: #f7f7f7;
+          border: 1px solid #e0e0e0;
+        }
+
+        .hold-row {
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+        }
+
+        /* ===== ITEM TEXT ===== */
+        .hold-name {
+          font-size: 14px;
+          color: #444;
+          margin-bottom: 6px;
+          text-align: left;
+        }
+
+        .hold-bib {
+          font-size: 16px;
+          font-weight: 700;
+          color: #000;
+        }
+
+        .hold-size {
+          font-size: 14px;
+          color: #555;
+          font-weight: 500;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .hold-modal-actions {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 16px;
+          gap: 10px; /* gap antara button */
+        }
+
+        .btn-cancel {
+          flex: 1;
+          background: #f1f3f5;   /* light neutral */
+          color: #555;
+          border: none;
+          border-radius: 20px;
+          padding: 10px 0;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .btn-collect {
+          flex: 1;
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+          color: #fff;
+          border: none;
+          border-radius: 20px;
+          padding: 10px 0;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+          transition: all 0.2s ease;
+        }
+        .btn-cancel:hover,
+        .btn-collect:hover {
+          opacity: 0.9;
+        }
+
+        /* ===== CLOSE BUTTON ===== */
+        .hold-modal-close {
+          position: absolute;
+          top: 8px;
+          right: 10px;
+          font-size: 20px;
+          background: transparent;
+          border: none;
+          color: #555;
+          cursor: pointer;
+          font-weight: bold;
+        }
+        .hold-modal-close:hover {
+          color: #000;
+        }
+
+
+
+        /* ===== WALKIN BOX (IMPROVED) ===== */
+        .walkin-box {
+          position: fixed;
+          top: 10%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 300px;
+          max-width: 92%;
+          background: #ffffff;
+          border: none;
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+          display: none;
+          z-index: 1000;
+          text-align: center;
+        }
+
+        /* Title */
+        .walkin-box h3 {
+          margin-top: 0;
+          margin-bottom: 15px;
+          font-weight: 700;
+          font-size: 18px;
+        }
+
+        /* Close button */
+        .walkin-box .close {
+          position: absolute;
+          right: 12px;
+          top: 10px;
+          font-size: 20px;
+          cursor: pointer;
+        }
+
+        /* Inputs */
+        .walkin-box input {
+          width: 90%;
+          margin: 5px auto;
+
+          padding: 7px;
+          border-radius: 8px;
+
+          border: 1px solid #ddd;
+
+          text-align: center;
+          font-size: 13px;
+        }
+
+        /* Bib + Chip row */
+        .bib-chip-row {
+          display: flex;
+          justify-content: center;
+          gap: 6px; /* tambah sikit spacing */
+          margin-top: 5px;
+        }
+
+        .bib-chip-row input {
+          width: 120px; /* kecil sikit */
+        }
+
+        /* Radio section */
+        .walkin-box label {
+          font-size: 14px;
+        }
+
+        /* Buttons */
+        .walkin-box button {
+          padding: 8px 14px;
+          font-size: 13px;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        /* Button row */
+        .walkin-box .btn-row {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 10px;
+        }
+
+        /* QR image */
+        #walkinQR {
+          width: 180px;   /* kecilkan sikit */
+          margin: 10px auto;
+        }
+
+        /* Loader */
+        #walkinLoader {
+          margin-top: 15px;
+        }
+
+        #walkinSubmitBtn {
+          background: linear-gradient(135deg, #6f42c1, #e83e8c);
+          color: white;
+        }
+        .walkin-box .btn-row button:last-child {
+          background: #eee;
+          color: #333;
+        }
+        .walkin-box button:hover {
+          opacity: 0.9;
+        }
+
+
+/*
+.dropdown-btn {
+  width: 100px;
+  height: 30px;
+
+  padding: 0;
+  border-radius: 20px;
+  border: none;
+
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 14px;
+
+  text-align: center;
+}
+*/
+.dropdown-menu {
+  position: absolute;
+  bottom: 60px; /* 🔥 dropup */
+  left: 15%;
+  transform: translateX(-30%);
+  width: 130px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 2000;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+
+/* WALKIN DROPDOWN BUTTON FIX */
+#walkinDropdownBtn {
+  display: block;
+  width: 92%;
+  margin: 0 auto;
+
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+
+  background: #fff;
+  color: #333;
+
+  font-size: 13px;
+  text-align: center;
+}
+
+
+#walkinDropdownMenu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width:70px;
+  bottom: 80px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  z-index: 2000;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  align-items: center;   /* 🔥 center semua card */
+}
+
+.card-item {
+  width: 85%;            /* 🔥 kecilkan lebar */
+  max-width: 280px;      /* 🔥 limit supaya tak besar sangat */
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-item .label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.card-item .value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.card-item.collected {
+  background: #eaf7ee;
+  color: #28a745;
+}
+
+.card-item.uncollected {
+  background: #fff3cd;
+  color: #856404;
+}
+
+</style>
+
+  <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+
+<style>
+
+    #logoutMenu {
+      display: none;
+      position: fixed;
+      top: 48px;
+      right: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      min-width: 180px;
+      overflow: hidden;
+    }
+
+    #logoutMenu div:hover {
+      background: #f5f5f5;
+    }
+
+    .menu-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item.logout {
+      color: red;
+    }
+/* Overlay full screen */
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: none;
+  justify-content: center; align-items: center;
+  z-index: 9999;
+}
+
+    .spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Spinner besar untuk global loader sahaja */
+#globalSpinner .spin {
+  font-size: 40px;
+  color: white;
+}
+
+/* Spinner kecil dalam button */
+.btn-spin {
+  font-size: 16px;
+  color: white;
+  line-height: 1;
+}
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #globalSpinner {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      pointer-events: all;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    #globalSpinner i {
+      font-size: 50px;
+    }
+
+    #uiBlocker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: transparent;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0d6efd;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 0.8s linear infinite;
+      margin: auto;
+    }
+
+    
+
+</style>
+
+</head>
+<body>
+  <div id="uiBlocker"></div>
+<div id="globalSpinner">
+    <i class="bi bi-arrow-repeat spin"></i>
+</div>
+
+  <div id="logoutMenu">
+    <div id="monitorBtn" class="menu-item" onclick="goMonitor()">
+      Monitor
+    </div>
+
+    <div id="adminBtn" class="menu-item" onclick="goAdmin()">
+      Admin
+    </div>
+
+    <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">
+      Logout
+    </div>
+  </div>
+
+  <!------------- BODY SECTION ------------->
+
+<div class="top-header">
+  <div class="profile-display" id="profileNameDisplay" style="color:#455A64; font-weight: bold;">
+    <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
+  </div>
+
+  <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
+    <i class="bi bi-box-arrow-right"></i>
+  </button>
+</div>
+<center>
+  <div style="margin-top: 15px;"></div>
+
+
+<!-- <img src="https://appfyrus.pages.dev/media/fyrpclogo2.png" alt="Logo" width="200"> -->
+<h1 id="secretSummaryTap" style="font-size:30px; font-style: italic; cursor:pointer; user-select:none;">
+  FyRPC
+</h1>
+
+
+<!-- QR Scanner Modal -->
+<div id="qrScannerModal" class="modal">
+  <div class="modal-content">
+    <button class="back-button" onclick="closeModal();">
+      <i class="bi bi-x-circle"></i> Close
+    </button>
+    <div class="modal-body">
+      <div id="reader" style="width: 100%;"></div> <!-- QR code scanner container -->
+      <div id="errorMessage" style="color: white; font-weight: bold; margin-top: 20%; display: none;"></div>
+        </div>
+      <button id="torchButton" class="torchToggle" onclick="toggleTorch()">
+            </button>
+            </div>
+          </div>
+
+
+<form style="text-align: left; display: inline-block; position: relative;">
+
+  <!-- Form Container -->
+<div class="search-wrapper">
+
+  <input type="text"
+    id="searchTerm"
+    class="search-box"
+    placeholder="Reg ID, MyKad or Name"
+    onkeydown="handleEnter(event)">
+
+<div id="onHoldContainer" style="display:none;">
+  <button
+    type="button"
+    id="onHoldButton"
+    onclick="openHoldModal()"
+  >(0)</button>
+</div>
+
+  <button type="button" id="searchButton" onclick="search()">
+    <i class="bi bi-search"></i>
+  </button>
+
+</div>
+  <!-- Clear Button -->
+  <div id="clearButtonContainer" class="clear-button">
+    <button type="button" onclick="clearSearch()" class="icon-clear-button">
+      <i class="bi bi-eraser-fill"></i> Clear
+    </button>
+  </div>
+  <div id="resultCount" class="counter"></div>
+</form>
+
+    <div id="message"></div>
+    <div id="result" class="result-box" style="text-align: left;"></div>
+    <br> <!-- this break to saperate status box at bottom -->
+
+    <button id="selectAllBtn" class="floating-select">Select All</button>
+
+
+<div id="collectBoxes" class="collect-box">
+  collect by 
+<input type="text" id="collectBy1" class="collect-input" placeholder="Name"
+       oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '');">
+<input type="tel" id="collectBy2" class="collect-input" placeholder="Phone Number"
+       oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+  <br>
+
+  <!-- wrapper untuk button -->
+  <div class="collect-button-wrapper">
+    <input type="button" id="holdButton" value="Hold" onclick="holdSelection()" class="collect-button hold-btn">
+    <input type="button" id="collectButton" value="Collect" onclick="collect()" class="collect-button">
+  </div>
+</div>
+
+  <br><br><br><br><br> <!-- this break to saperate status box at bottom -->
+
+  <div id="collectedStatusContainer" class="status-box">
+  <!--  <p>Collection Status</p> -->
+    <div id="collectedStatus"></div>
+    <br>
+    <button id="okButton" class="ok-button" onclick="dismissCollectedStatus()">OK</button>
+  </div>
+
+<div id="holdModal" class="hold-modal">
+  <div class="hold-modal-box">
+    <div class="hold-modal-header">
+      <b>HOLD ITEMS</b>
+      <button class="hold-modal-close" onclick="closeHoldModal()">&times;</button>
+    </div>
+
+    <div id="holdList" class="hold-grid"></div>
+
+    <div id="holdActions" class="hold-modal-actions">
+      <button id="modalRemoveBtn" onclick="removeHold()" class="btn-cancel">REMOVE</button>
+      <button id="modalCollectBtn" onclick="collectHold()" class="btn-collect">COLLECT</button>
+      <button id="modalOkBtn" onclick="closeHoldModal()" class="btn-collect" style="display:none;">OK</button>
+    </div>
+
+    <div id="holdCollectedMsg" style="display:none; text-align:center; margin-top:12px; font-weight:600; color:#4CAF50;">
+      COLLECTED
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+    <div id="footer">
+        <div class="dropdown-container">
+            <div class="dropdown">
+                <button id="searchDropdownBtn" class="dropdown-btn">IC/ID/Name</button>
+
+                <div class="dropdown-menu">
+                    <div class="dropdown-item" onclick="setOption('DEFAULT','IC/ID/Name')">IC/ID/Name</div>
+                    <div class="dropdown-item" onclick="setOption('A','Team')">Team</div>
+                    <div class="dropdown-item" onclick="setOption('E','Email')">Email</div>
+                    <div class="dropdown-item" onclick="setOption('F','BIB no')">BIB no</div>
+                    <div class="dropdown-item" onclick="setOption('G','Collected')">Collected</div>
+                </div>
+            </div>
+
+            <input type="hidden" id="searchOption" value="DEFAULT">
+
+            <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
+                Add Runner
+            </button>
+        </div>
+
+ 
+          <div class="floating-button-wrapper">
+             <button id="startButton" onclick="openScannerModal()">
+                <i class="bi bi-qr-code-scan"></i>
+             </button>
+          </div>
+
+    <!--  <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
+        <i class="bi bi-cart-plus" style="font-size: 20px;"></i>
+      </button>
+
+        <button id="showCollected" class="showCollectedbutton" onclick="showCollectedStatus()">
+            <i id="showCollectedIcon" class="bi bi-journal-text" style="font-size: 20px;"></i>
+        </button>
+    </div> -->
+
+
+    <!-- WALKIN FORM -->
+    <div id="walkinFormBox" class="walkin-box">
+        <span class="close" onclick="closeWalkinForm()">&times;</span>
+        <h3>Add New Runner</h3>
+
+        <div id="walkinFields">
+        <input type="tel" id="walkinIC" placeholder="No IC" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+        <input type="text" id="walkinName" placeholder="Name" style="text-transform: uppercase; margin-top: 10px;" />
+        <input type="tel" id="walkinContact" placeholder="Contact" style="margin-top: 10px;"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+
+        <div class="bib-chip-row">
+            <input type="text" id="walkinBib" placeholder="BIB No"
+                   oninput="this.value=this.value.toUpperCase().replace(/[^0-9ABCDEFGKS/() ]/g,'')" />
+            <input type="tel" id="walkinChip" placeholder="Chip No"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+        </div>
+
+        <input type="text" id="walkinEmer" placeholder="Emergency Name / Phone"
+               style="margin-top: 10px;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9/ ]/g,'')" />
+
+        <div style="margin-top:20px;">
+           <label style="font-weight:600; display:block; margin-bottom:4px;">Category:</label>
+
+           <select id="walkinDistance" style="width:92%; padding:6px; border-radius:6px; border:1px solid #ccc; text-align:center; font-size:14px;">
+                <option>Loading...</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="walkinError" style="color:red; font-weight:bold; display:none; margin-top:5px; margin-bottom: 5px;"></div>
+
+        <div id="confirmPreview" style="display:none; text-align:center; margin-bottom:15px;">
+            <div style="font-weight:bold; margin-bottom:8px;">ADD THIS RUNNER?</div>
+            <div>NAME: <b id="previewName"></b></div>
+            <div style="font-size:22px; margin-top:5px;">BIB: <b id="previewBib"></b></div>
+        </div>
+
+                <br>
+
+        <div class="btn-row">
+            <button id="walkinSubmitBtn" onclick="submitWalkinForm()">SUBMIT</button>
+            <button onclick="handleCancel()">CANCEL</button>
+        </div>
+
+<!--        <img id="walkinQR"
+                src="https://raw.githubusercontent.com/fyrus7/rpc_config/main/tngQR.png" alt="QR Code"
+                style="width:230px;max-width:100%;display:block;margin:15px auto;" />
+-->
+        <div id="walkinLoader" style="display:none; text-align:center; margin-top:15px;">
+            <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:#000;"></i>
+        </div>
+
+        <div id="walkinLoader" style="display:none; text-align:center; margin-top:15px;">
+            <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:#000;"></i>
+        </div>
+    </div>
+
+    <div id="successBox" class="walkin-box" style="display:none;">
+        <h3>Successfull Added</h3>
+        <p><b><span id="successBib" style="font-size:40px;"></span></b></p>
+        <p><b><span id="successName" style="font-size:20px;"></span></b></p>
+        <br>
+        <button onclick="closeSuccessBox()">OK</button>
+    </div>
+
+
+<div id="overlay">
+  <i class="bi bi-arrow-repeat spin"></i>
+</div>
+
+
+  <!------------- BODY SECTION ------------->
+
+<audio id="markSound" src="Sound/collected.mp3"></audio>
+<audio id="warnSound" src="Sound/warning.mp3"></audio>
+<audio id="successSound" src="Sound/tada.mp3"></audio>
+        
+        <script src="QRscan/html5-qrcode.min.js"></script>
+
+<script src="config.js"></script>
+
+<script>
+
+    function cleanApiBase() {
+      return String(WORKER_API || "").replace(/\/+$/, "");
+    }
+
+    async function apiJson(path, options = {}) {
+      const res = await fetch(`${cleanApiBase()}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+
+      const raw = await res.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        throw new Error(raw || `HTTP ${res.status}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      return data;
+    }
+
+    function showLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "flex";
+      }
+
+      blockUI(true);
+    }
+
+    function hideLoader() {
+      const spinner = document.getElementById("globalSpinner");
+
+      if (spinner) {
+        spinner.style.display = "none";
+      }
+
+      blockUI(false);
+    }
+
+    function blockUI(state) {
+      const blocker = document.getElementById("uiBlocker");
+
+      if (blocker) {
+        blocker.style.display = state ? "block" : "none";
+      }
+    }
+
+    function setAllButtonsDisabled(state) {
+      document
+        .querySelectorAll("button, input[type=button]")
+        .forEach(btn => {
+          btn.disabled = state;
+        });
+    }
+
+    function isMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+      return (
+        /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+        window.innerWidth <= 768 ||
+        window.matchMedia("(pointer: coarse)").matches
+      );
+    }
+
+
+    function requireLogin() {
+      const token = localStorage.getItem("sessionToken");
+      const profile = localStorage.getItem("userProfile");
+
+      if (!token || !profile) {
+        window.location.replace("index.html");
+        return false;
+      }
+
+      document.getElementById("userProfile").textContent =
+        profile.toUpperCase();
+
+      apiJson("/validate", {
+        method: "POST",
+        body: JSON.stringify({ token })
+      })
+        .then(response => {
+          if (!response.valid) {
+            localStorage.clear();
+            window.location.replace("index.html");
+          }
+        })
+        .catch(err => {
+          console.log("VALIDATE ERROR:", err);
+        });
+
+      return true;
+    }
+
+
+    function handleLogoutClick() {
+      const role = (localStorage.getItem("userProfile") || "").toLowerCase();
+
+      if (role === "admin" || role === "mod") {
+        openLogoutMenu();
+      } else {
+        logout();
+      }
+    }
+
+    function openLogoutMenu() {
+      const menu = document.getElementById("logoutMenu");
+
+      if (!menu) return;
+
+      menu.style.display =
+        menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", event => {
+      const menu = document.getElementById("logoutMenu");
+      const btn = document.getElementById("logoutBtn");
+
+      if (!menu || !btn) return;
+
+      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        menu.style.display = "none";
+      }
+    });
+
+
+    function goMonitor() {
+      const btn = document.getElementById("monitorBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "monitor.html";
+    }
+
+    function goAdmin() {
+      const btn = document.getElementById("adminBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "admin.html";
+    }
+
+    
+    async function logout() {
+      setAllButtonsDisabled(true);
+
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (logoutBtn && logoutBtn.offsetParent !== null) {
+        logoutBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+      }
+
+      const token = localStorage.getItem("sessionToken");
+
+      try {
+        if (token) {
+          await apiJson("/logout", {
+            method: "POST",
+            body: JSON.stringify({ token })
+          });
+        }
+
+      } catch (err) {
+        console.log("LOGOUT ERROR:", err);
+
+      } finally {
+        localStorage.clear();
+        window.location.replace("index.html");
+      }
+    }
+
+function logoutFromMenu() {
+  const btn = document.getElementById("logoutMenuBtn");
+  const adminBtn = document.getElementById("adminBtn");
+  const monitorBtn = document.getElementById("monitorBtn");
+
+  [adminBtn, monitorBtn, btn].forEach(el => {
+    if (el) {
+      el.style.pointerEvents = "none";
+      el.style.opacity = "0.6";
+    }
+  });
+
+  if (btn) {
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+  }
+
+  // 🔥 force render frame sebelum logout jalan
+  setTimeout(() => {
+    logout();
+  }, 50);
+}
+
+</script>
+
+
+<script>
+window.html5QrCode = window.html5QrCode || undefined;
+window.torchEnabled = window.torchEnabled || false;
+window.beepSound = window.beepSound || new Audio('Sound/media_QRScan.mp3');
+
+// Function to open the scanner modal
+async function openScannerModal() {
+
+  // reset scan session
+  scannedSet.clear();
+  lastScanned = "";
+  lastScanTime = 0;
+
+  resetTorchState();
+
+  document.getElementById("qrScannerModal").style.display = "block";
+  document.getElementById('footer').classList.add('hide-footer');
+
+  // optional safety stop
+  if (html5QrCode && html5QrCode._isScanning) {
+    await html5QrCode.stop().catch(() => {});
+  }
+
+  startScanner();
+}
+
+
+// Helper: safe set display - new QR code
+function setDisplay(id, value) {
+  const el = document.getElementById(id);
+  if (el && el.style) el.style.display = value;
+}
+
+// Helper: safe set text/html
+function setText(id, text, isHTML = false) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (isHTML) el.innerHTML = text;
+  else el.textContent = text;
+}
+
+var lastScanned = "";
+var lastScanTime = 0;
+var scannedSet = new Set();
+
+// Function to start the scanner
+async function startScanner() {
+  // Block kalau bukan mobile
+  if (!/Mobi|Android/i.test(navigator.userAgent)) {
+    setText('errorMessage', 'QR Scanner function only works on<br>Smartphone with a back camera.', true);
+    setDisplay('errorMessage', 'block');
+    return;
+  }
+
+  // Reset error message
+  setDisplay('errorMessage', 'none');
+  setText('errorMessage', '');
+
+  if (!html5QrCode) {
+    html5QrCode = new Html5Qrcode("reader");
+  }
+
+  setDisplay('reader', 'block');
+
+  // Start the scanner
+  html5QrCode.start(
+    { facingMode: { exact: "environment" } },
+    { fps: 10, qrbox: { width: 300, height: 300 } },
+(decodedText) => {
+
+  const now = Date.now();
+
+  // anti spam frame
+  if (decodedText === lastScanned && (now - lastScanTime < 1500)) {
+    return;
+  }
+
+  lastScanned = decodedText;
+  lastScanTime = now;
+
+  const input = document.getElementById("searchTerm");
+  if (!input) return;
+
+  const current = input.value.trim();
+
+  let list = current
+    ? current.split(",").map(v => v.trim()).filter(v => v)
+    : [];
+
+  if (scannedSet.has(decodedText)) {
+    return;
+  }
+
+  scannedSet.add(decodedText);
+
+  beepSound?.play();
+  navigator.vibrate?.(100);
+
+  list.push(decodedText);
+
+  const newValue = list.join(", ");
+  input.value = newValue;
+
+  search(newValue);
+
+  // 🔥 CLOSE SCANNER SELEPAS SCAN
+  stopScanner();
+  closeModal();
+},
+    (errorMessage) => {
+      console.log(errorMessage);
+    }
+  ).then(() => {
+    if (isTorchSupported(html5QrCode)) {
+      setDisplay('torchButton', 'inline-block');
+    }
+  }).catch(err => {
+    console.error("Unable to start scanning", err);
+    setText('errorMessage', 'QR Scanner function only works on<br>Smartphone with a back camera.', true);
+    setDisplay('errorMessage', 'block');
+    resetUI?.();
+    stopScanner?.();
+  });
+}
+
+
+
+// Function to close the modal
+function closeModal() {
+  setDisplay("qrScannerModal", "none");
+  document.getElementById('footer')?.classList.remove('hide-footer');
+  stopScanner();
+}
+
+// Check if torch is supported
+function isTorchSupported(html5QrCode) {
+  const settings = html5QrCode.getRunningTrackSettings();
+  return "torch" in settings;
+}
+
+// Toggle torch on/off
+async function toggleTorch() {
+  try {
+    if (!torchEnabled) {
+      await html5QrCode.applyVideoConstraints({ advanced: [{ torch: true }] });
+      torchEnabled = true;
+      setText('torchButton', '<i class="bi bi-lightbulb" style="font-size: 30px;"></i><br>Torch is On', true);
+    } else {
+      await html5QrCode.applyVideoConstraints({ advanced: [{ torch: false }] });
+      torchEnabled = false;
+      setText('torchButton', '<i class="bi bi-lightbulb-off" style="font-size: 30px;"></i><br>Torch is Off', true);
+    }
+  } catch (err) {
+    console.error("Failed to toggle torch", err);
+  }
+}
+
+function stopScanner() {
+  if (html5QrCode) {
+    html5QrCode.stop().then(() => {
+      resetReader();
+      resetUI();
+      resetTorchState();
+    }).catch(err => {
+      console.error("Unable to stop scanning", err);
+      resetReader();
+      resetUI();
+      resetTorchState();
+    });
+  } else {
+    resetReader();
+    resetUI();
+  }
+}
+
+function resetReader() {
+  setDisplay('reader', 'none');
+  if (html5QrCode) {
+    html5QrCode.clear();
+  }
+}
+
+// Reset the torch state and button
+function resetTorchState() {
+  torchEnabled = false;
+  setText('torchButton', '<i class="bi bi-lightbulb-off" style="font-size: 30px;"></i><br>Torch is Off', true);
+  setDisplay('torchButton', 'none');
+}
+
+function resetUI() {
+  resetReader();
+}
+
+
+
+
+         window.addEventListener("scroll", function () {
+           const btn = document.getElementById("clearButtonContainer");
+           if (!btn) return;
+
+           if (window.scrollY > 50) {
+             btn.classList.add("floating");
+           } else {
+             btn.classList.remove("floating");
+           }
+         });
+
+         document.addEventListener("click", function (e) {
+           const btn = e.target.closest(".dropdown-btn");
+           const menus = document.querySelectorAll(".dropdown-menu");
+
+           menus.forEach(m => m.classList.remove("show"));
+
+           if (btn) {
+             const menu = btn.nextElementSibling;
+             if (menu) {
+               menu.classList.toggle("show");
+               e.stopPropagation();
+             }
+           }
+         });
+
+         function setOption(val, label) {
+           document.getElementById("searchOption").value = val;
+           document.getElementById("searchDropdownBtn").innerText = label;
+           updatePlaceholder();
+         }
+
+</script>
+
+  <script src="shared.js"></script>
+
+</body>
+</html>
