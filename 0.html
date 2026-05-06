@@ -1061,25 +1061,30 @@
   color: #856404;
 }
 
-/* list scroll kalau panjang */
 .balance-list {
   margin-top: 10px;
   max-height: 500px;
   overflow-y: auto;
+
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 0;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12); /* 🔥 shadow hanya luar */
 }
 
 /* row layout */
 .balance-row {
-  background: #fff;
   display: flex;
   justify-content: space-between;
   padding: 10px 12px;
-  margin: 6px auto;
+  margin: 0 auto;
   width: 92%;
   font-size: 22px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08); /* 🔥 separator */
 }
 
 .cat {
