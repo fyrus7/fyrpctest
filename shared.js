@@ -1,55 +1,6 @@
 
 const WORKER_API = window.APP_CONFIG.WORKER_API;
 
-if (path === "/d1-test") {
-  return handleD1Test(env)
-}
-
-async function handleD1Test(env) {
-  try {
-    const rows = await env.DB.prepare(
-      "SELECT * FROM participants LIMIT 5"
-    ).all()
-
-    return json({
-      success: true,
-      data: rows.results
-    })
-
-  } catch (e) {
-    return json({
-      success: false,
-      error: e.toString()
-    }, 500)
-  }
-}
-
-if (path === "/d1-insert") {
-  return handleD1Insert(request, env)
-}
-
-async function handleD1Insert(request, env) {
-  try {
-    const body = await request.json()
-
-    await env.DB.prepare(`
-      INSERT INTO participants (bib, name, size)
-      VALUES (?, ?, ?)
-      ON CONFLICT(bib) DO UPDATE SET
-        name=excluded.name,
-        size=excluded.size
-    `).bind(
-      body.bib,
-      body.name,
-      body.size
-    ).run()
-
-    return json({ success: true })
-
-  } catch (e) {
-    return json({ error: e.toString() })
-  }
-}
 let firstSearchDone = false;
 let enablePrint = false;
 let scanTimer;
