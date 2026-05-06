@@ -1,795 +1,612 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FyRPC Login</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-  <title>FyRPC Sync</title>
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-  <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+  body {
+    font-family: 'K2D', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  <style>
-    * { box-sizing: border-box; }
+    background: url("Media/gradientbg5.jpg") no-repeat center center fixed;
+    background-size: cover;
 
-    html,
+    padding: 20px;
+  }
+
+  .glass-container {
+    width: 100%;
+    max-width: 300px;
+
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+
+    border-radius: 16px;
+    padding: 40px 30px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.pin-wrapper {
+  position: relative;
+  width: 220px;
+  max-width: 100%;
+  margin: 0 auto 12px auto;
+}
+
+.input-box {
+  width: 100%;
+  height: 42px;
+
+  padding: 10px 42px 10px 42px; /* kiri kanan sama */
+  font-size: 15px;
+
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+
+  text-align: center;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.input-box:focus {
+  border-color: #e83e8c;
+  box-shadow: 0 0 10px rgba(232,62,140,0.3);
+}
+
+#toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  font-size: 18px;
+  color: #6f42c1;
+  text-shadow: 0 0 1px #455A64;
+}
+
+  .submit-button {
+    width: 130px;
+
+    font-size: 15px;
+    color: #ffffff;
+
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+
+    padding: 9px 0;
+    cursor: pointer;
+
+    border: none;
+    border-radius: 20px;
+
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .submit-button:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+
+  .login-info-box {
+    margin-top: 15px;
+    padding: 12px;
+
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-info-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .login-info-content {
+    display: inline-block;
+    text-align: left;
+  }
+
+  @media (max-width: 480px) {
     body {
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      -webkit-text-size-adjust: 100%;
-      margin-top: 0;
+      padding: 15px;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f8fa;
-      color: #222;
+    .glass-container {
+      padding: 35px 24px;
+    }
+  }
+</style>
+ <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <div class="glass-container">
+    <img id="logoImg" img src="Media/flogo.png" alt="Logo" width="200">
+    <br><br>
+
+    <form id="login-form" onsubmit="event.preventDefault(); validateLogin();">
+<div class="pin-wrapper">
+  <input
+    type="tel"
+    id="pwd"
+    name="password"
+    class="input-box"
+    placeholder="Enter PIN"
+    pattern="[0-9]*"
+    inputmode="numeric"
+    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+  >
+
+  <span id="toggle-password" class="bi bi-eye-slash"></span>
+</div>
+
+<button type="submit" id="submit-btn" class="submit-button">
+  Login
+</button>
+      <div id="error-message" style="color:red; font-weight:bold; margin-top:10px; font-size:18px;"></div>
+    </form>
+
+    <br>FyRPC
+   <br>Multiplatform v2
+    <br>
+    <div class="login-info-box">
+      <div class="login-info-title">Login PIN:</div>
+      <div class="login-info-content">
+        <div>1234 / admin</div>
+        <div>0001 / counter01</div>
+        <div>0002 / counter02</div>
+        <div>0003 / counter03</div>
+      </div>
+    </div>
+  </div>
+
+ <script src="config.js"></script>
+ 
+<script>
+const WORKER_API = window.APP_CONFIG.WORKER_API;
+ 
+let isLoggingIn = false;
+
+function cleanApiBase() {
+  return String(WORKER_API || "").replace(/\/+$/, "");
+}
+
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+
+  return (
+    /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
+    window.innerWidth <= 768 ||
+    window.matchMedia("(pointer: coarse)").matches
+  );
+}
+
+function getDashboardPage() {
+  return isMobileDevice() ? "0.html" : "1.html";
+}
+
+// 🚀 ON LOAD
+window.addEventListener("DOMContentLoaded", () => {
+  const submitButton = document.getElementById("submit-btn");
+  if (!submitButton) return;
+
+  submitButton.innerText = "Verifying...";
+  submitButton.disabled = true;
+
+  const token = localStorage.getItem("sessionToken");
+
+  // 🔐 AUTO LOGIN / VALIDATE SESSION
+  if (token) {
+    fetch(`${cleanApiBase()}/validate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token
+      })
+    })
+      .then(res => res.text())
+      .then(raw => {
+        console.log("RAW VALIDATE:", raw);
+
+        let response;
+
+        try {
+          response = JSON.parse(raw);
+        } catch (e) {
+          submitButton.innerText = "Login";
+          submitButton.disabled = false;
+          return;
+        }
+
+        if (response.valid) {
+          loadDashboard(response.profile);
+        } else {
+          localStorage.clear();
+          submitButton.innerText = "Login";
+          submitButton.disabled = false;
+        }
+      })
+      .catch(err => {
+        console.log("VALIDATE FETCH ERROR:", err);
+        submitButton.innerText = "Login";
+        submitButton.disabled = false;
+      });
+
+  } else {
+    submitButton.innerText = "Login";
+    submitButton.disabled = false;
+  }
+
+  // 👁️ Toggle password
+  const passwordInput = document.getElementById("pwd");
+  const toggleIcon = document.getElementById("toggle-password");
+  const hidePassword = localStorage.getItem("hidePassword");
+
+  if (passwordInput && toggleIcon) {
+    if (hidePassword === "false") {
+      passwordInput.type = "text";
+      toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+      localStorage.setItem("hidePassword", "true");
     }
 
-    .main-content {
-      padding: 42px 10px 18px;
-    }
+    toggleIcon.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
+        localStorage.setItem("hidePassword", "false");
+      } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+        localStorage.setItem("hidePassword", "true");
+      }
+    });
 
-    .top-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 9999;
-      background: linear-gradient(135deg, #6f42c1, #e83e8c);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 30px !important;
-      padding: 0 12px;
-      color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
+    passwordInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        passwordInput.blur();
+        validateLogin();
+      }
+    });
+  }
+});
 
-    .top-header #profileNameDisplay,
-    #profileNameDisplay,
-    #logoutBtn {
-      color: white !important;
-    }
+// 🔐 LOGIN
+function validateLogin() {
+  if (isLoggingIn) return;
 
-    .top-header #profileNameDisplay {
-      font-size: 14px;
-    }
+  isLoggingIn = true;
 
-    button { font-family: inherit; }
+  const enteredPassword = document.getElementById("pwd")?.value || "";
+  const submitButton = document.getElementById("submit-btn");
+  const errorMessage = document.getElementById("error-message");
 
-    button:disabled {
-      opacity: 0.65;
-      cursor: not-allowed !important;
-    }
+  if (!submitButton || !errorMessage) {
+    isLoggingIn = false;
+    return;
+  }
 
-    .spin {
-      animation: spin 1s linear infinite;
-      display: inline-block;
-    }
+  errorMessage.innerText = "";
+  submitButton.innerText = "Loading...";
+  submitButton.disabled = true;
 
-    #globalSpinner .spin {
-      font-size: 40px;
-      color: white;
-    }
+  if (!enteredPassword.trim()) {
+    errorMessage.innerText = "Please enter your password.";
+    submitButton.innerText = "Login";
+    submitButton.disabled = false;
+    isLoggingIn = false;
+    return;
+  }
 
-    .btn-spin {
-      font-size: 16px;
-      color: white;
-      line-height: 1;
-    }
+  fetch(`${cleanApiBase()}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      password: enteredPassword
+    })
+  })
+    .then(res => res.text())
+    .then(raw => {
+      console.log("RAW LOGIN:", raw);
 
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
+      let response;
 
-    #globalSpinner {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10001;
-      justify-content: center;
-      align-items: center;
-      pointer-events: all;
-      background: rgba(0, 0, 0, 0.2);
-    }
+      try {
+        response = JSON.parse(raw);
+      } catch (e) {
+        alert("SERVER ERROR:\n" + raw);
+        isLoggingIn = false;
+        submitButton.innerText = "Login";
+        submitButton.disabled = false;
+        return;
+      }
 
-    #globalSpinner i { font-size: 50px; }
+      isLoggingIn = false;
+      submitButton.innerText = "Login";
+      submitButton.disabled = false;
 
-    #uiBlocker {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: transparent;
-    }
+      if (response.success) {
+        localStorage.setItem("sessionToken", response.token);
+        localStorage.setItem("userProfile", response.profile);
+        localStorage.setItem("lastDashboardPage", getDashboardPage());
 
-    #logoutMenu {
-      display: none;
-      position: fixed;
-      top: 48px;
-      right: 10px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      z-index: 999;
-      min-width: 180px;
-      overflow: hidden;
-    }
+        loadDashboard(response.profile);
 
-    #logoutMenu div:hover { background: #f5f5f5; }
+      } else {
+        if (response.reason === "NO_MATCH") {
+          errorMessage.innerText = "Wrong Password";
+        } else if (response.error) {
+          errorMessage.innerText =
+            typeof response.error === "string"
+              ? response.error
+              : JSON.stringify(response.error);
+        } else {
+          errorMessage.innerText = "Wrong Password";
+        }
+      }
+    })
+    .catch(err => {
+      console.log("FETCH ERROR:", err);
 
-    .menu-item {
-      padding: 10px;
-      cursor: pointer;
-    }
+      isLoggingIn = false;
+      submitButton.innerText = "Login";
+      submitButton.disabled = false;
+      errorMessage.innerText = "Server Under Maintenance";
+    });
+}
 
-    .menu-item.logout { color: red; }
+// 📱 / 💻 REDIRECT PAGE
+function loadDashboard(profile) {
+  if (!profile) return;
 
-    .section-card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 14px;
-      margin-top: 16px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-    }
+  profile = String(profile).toLowerCase();
+  localStorage.setItem("userProfile", profile);
 
-    .section-card h2 {
-      margin: 0 0 6px;
-      font-size: 20px;
-    }
+  if (["mod", "admin"].includes(profile)) {
+    showMasterChoice();
+    return;
+  }
 
-    .section-card p {
-      margin: 0 0 14px;
-      color: #666;
-      line-height: 1.4;
-      font-size: 14px;
-    }
+  goDashboard();
+}
 
-    .sync-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
+function goDashboard() {
+  const page = getDashboardPage();
 
-    .sync-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 16px 12px;
-      min-height: 74px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.10);
-    }
+  localStorage.setItem("lastDashboardPage", page);
+  window.location.href = page;
+}
 
-    .sync-btn .label {
-      display: block;
-      font-size: 15px;
-      line-height: 1.25;
-    }
+function goPage(page) {
+  localStorage.setItem("lastDashboardPage", page);
+  window.location.href = page;
+}
 
-    .sync-btn .path {
-      display: block;
-      font-size: 11px;
-      opacity: 0.9;
-      margin-top: 4px;
-      font-weight: normal;
-      word-break: break-all;
-    }
+function showMasterChoice() {
+  const oldOverlay = document.getElementById("choiceOverlay");
+  if (oldOverlay) oldOverlay.remove();
 
-    .primary-btn { background: #007bff; }
-    .success-btn { background: #28a745; }
-    .purple-btn { background: #6f42c1; }
-    .dark-btn { background: #343a40; }
-    .warning-btn { background: #ff9800; }
-    .danger-btn { background: #d9534f; }
-    .grey-btn { background: #6c757d; }
+  const modal = document.createElement("div");
 
-    .status-box {
-      margin-top: 14px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fbfbfb;
-      padding: 12px;
-      min-height: 110px;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      font-family: Consolas, Monaco, monospace;
-      font-size: 13px;
-      line-height: 1.45;
-    }
+  modal.innerHTML = `
+    <div id="choiceOverlay" style="
+      position:fixed;
+      top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    ">
+      <div id="choiceBox" style="
+        background: rgba(255,255,255,0.95);
+        padding:20px;
+        border-radius:16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        text-align:center;
+        width:280px;
+      ">
+        <h3 style="margin:0; color:#6f42c1;">Choose Page</h3>
 
-    .note {
-      margin-top: 10px;
-      padding: 10px;
-      background: #fff7e6;
-      border: 1px solid #ffe0a3;
-      border-radius: 8px;
-      color: #6b4a00;
-      font-size: 13px;
-      line-height: 1.35;
-    }
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px;">
+          <button id="goDashboard" class="choiceBtn">Dashboard</button>
+          <button id="goMonitor" class="choiceBtn">Monitor</button>
+          <button id="goAdmin" class="choiceBtn">Admin</button>
+          <button id="goSync" class="choiceBtn">Sync</button>
+        </div>
 
-    #confirmModal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 10002;
-      padding: 12px;
-    }
+        <button id="goCancel" class="cancelBtn">Cancel</button>
+      </div>
+    </div>
+  `;
 
-    #confirmModal .modal-box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    }
+  document.body.appendChild(modal);
 
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 12px;
-    }
+  ensureChoiceStyle();
 
-    .small-btn {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-    }
+  function showSpinner(message) {
+    const box = document.getElementById("choiceBox");
+    if (!box) return;
 
+    box.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="
+          width:40px;height:40px;
+          border:4px solid #ddd;
+          border-top:4px solid #333;
+          border-radius:50%;
+          animation:spin 1s linear infinite;
+          margin-bottom:10px;
+        "></div>
+        <span>${message}</span>
+      </div>
+    `;
+  }
 
+  // Auto ikut device:
+  // phone = mobile.html
+  // desktop/laptop = desktop.html
+  document.getElementById("goDashboard").onclick = () => {
+    showSpinner("Opening Dashboard...");
+    setTimeout(() => goDashboard(), 200);
+  };
+
+  document.getElementById("goMonitor").onclick = () => {
+    showSpinner("Opening Monitor...");
+    setTimeout(() => goPage("monitor.html"), 200);
+  };
+
+  document.getElementById("goAdmin").onclick = () => {
+    showSpinner("Opening Admin...");
+    setTimeout(() => goPage("admin.html"), 200);
+  };
+
+  document.getElementById("goSync").onclick = () => {
+    showSpinner("Opening Sync...");
+    setTimeout(() => goPage("sync.html"), 200);
+  };
+
+  document.getElementById("goCancel").onclick = () => {
+    const box = document.getElementById("choiceBox");
+    if (box) box.innerHTML = "Exiting...";
+    logout();
+  };
+}
+
+function ensureChoiceStyle() {
+  if (document.getElementById("choiceStyle")) return;
+
+  const style = document.createElement("style");
+  style.id = "choiceStyle";
+
+  style.innerHTML = `
     .choiceBtn {
-      width: 100%;
-      padding: 12px;
-      font-size: 15px;
-      border: none;
-      border-radius: 20px;
+      width:100%;
+      padding:12px;
+      font-size:15px;
+      border:none;
+      border-radius:20px;
       background: linear-gradient(135deg, #6f42c1, #e83e8c);
-      color: #fff;
-      cursor: pointer;
+      color:#fff;
+      cursor:pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
       transition: all 0.2s ease;
     }
 
-    .choiceBtn:hover { opacity: 0.9; }
+    .choiceBtn:hover {
+      opacity: 0.9;
+    }
 
     .cancelBtn {
-      width: 100%;
-      margin-top: 15px;
-      padding: 10px;
-      border: none;
-      border-radius: 20px;
-      background: #f1f3f5;
-      color: #555;
-      cursor: pointer;
+      width:100%;
+      margin-top:15px;
+      padding:10px;
+      border:none;
+      border-radius:20px;
+      background:#f1f3f5;
+      color:#555;
+      cursor:pointer;
       transition: all 0.2s ease;
     }
 
-    .cancelBtn:hover { opacity: 0.9; }
-
-    @media (max-width: 640px) {
-      body { padding: 0; }
-      .main-content { padding-left: 8px; padding-right: 8px; }
-      .top-header { height: 36px; }
-      .sync-grid { grid-template-columns: 1fr; }
-      .sync-btn { min-height: 66px; }
-    }
-  </style>
-</head>
-
-<body>
-  <div id="uiBlocker"></div>
-
-  <div id="globalSpinner">
-    <i class="bi bi-arrow-repeat spin"></i>
-  </div>
-
-  <div id="logoutMenu">
-    <div id="masterChoiceBtn" class="menu-item" onclick="showMasterChoice()">Master Choice</div>
-    <div id="dashboardBtn" class="menu-item" onclick="goDashboard()">Dashboard</div>
-    <div id="monitorBtn" class="menu-item" onclick="goMonitor()">Monitor</div>
-    <div id="adminBtn" class="menu-item" onclick="goAdmin()">Admin</div>
-    <div id="syncMenuBtn" class="menu-item" onclick="goSync()">Sync</div>
-    <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">Logout</div>
-  </div>
-
-  <div class="top-header">
-    <div class="profile-display" id="profileNameDisplay" style="color:#455A64; font-weight: bold;">
-      <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
-    </div>
-
-    <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
-      <i class="bi bi-box-arrow-right"></i>
-    </button>
-  </div>
-
-  <div class="main-content">
-    <div id="confirmModal">
-      <div class="modal-box">
-        <p id="modalText"></p>
-        <div class="modal-actions">
-          <button id="modalYes" class="small-btn danger-btn">Yes</button>
-          <button id="modalNo" class="small-btn grey-btn">No</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h2>Sync</h2>
-      <p>Gunakan button di bawah untuk sync data Google Sheet ke D1 atau export RPCdata dari D1 balik ke Google Sheet.</p>
-
-      <div class="sync-grid">
-        <button id="syncRpcBtn" class="sync-btn primary-btn" data-path="/migrate-rpcdata-to-d1">
-          <span>
-            <span class="label">SYNC SHEET TO DB</span>
-            <span class="path">/migrate-rpcdata-to-d1</span>
-          </span>
-          <i class="bi bi-database-down"></i>
-        </button>
-
-        <button id="syncWalkinBtn" class="sync-btn success-btn" data-path="/migrate-walkin-to-d1">
-          <span>
-            <span class="label">SYNC WALKIN</span>
-            <span class="path">/migrate-walkin-to-d1</span>
-          </span>
-          <i class="bi bi-person-walking"></i>
-        </button>
-
-        <button id="syncUserBtn" class="sync-btn purple-btn" data-path="/migrate-userprofile-to-d1">
-          <span>
-            <span class="label">SYNC USER</span>
-            <span class="path">/migrate-userprofile-to-d1</span>
-          </span>
-          <i class="bi bi-people"></i>
-        </button>
-
-        <button id="syncSessionBtn" class="sync-btn dark-btn" data-path="/migrate-session-to-d1">
-          <span>
-            <span class="label">SYNC SESSION</span>
-            <span class="path">/migrate-session-to-d1</span>
-          </span>
-          <i class="bi bi-clock-history"></i>
-        </button>
-
-        <button id="exportRpcBtn" class="sync-btn warning-btn" data-path="/export-rpcdata-to-sheet" data-export="1">
-          <span>
-            <span class="label">EXPORT</span>
-            <span class="path">/export-rpcdata-to-sheet</span>
-          </span>
-          <i class="bi bi-cloud-upload"></i>
-        </button>
-      </div>
-
-      <div class="note">
-        EXPORT akan clear tab <b>RPCdata!A:S</b> di Google Sheet dan replace dengan data semasa dari D1. Gunakan bila D1 ialah source terbaru.
-      </div>
-
-      <div id="statusBox" class="status-box">Ready.</div>
-    </div>
-  </div>
-
-  <script src="config.js"></script>
-
-  <script>
-    const WORKER_API = window.APP_CONFIG.WORKER_API;
-
-    function cleanApiBase() {
-      return String(WORKER_API || "").replace(/\/+$/, "");
+    .cancelBtn:hover {
+      opacity: 0.9;
     }
 
-    async function apiJson(path, options = {}) {
-      const res = await fetch(`${cleanApiBase()}${path}`, {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          ...(options.headers || {})
-        }
-      });
-
-      const raw = await res.text();
-      let data;
-
-      try {
-        data = JSON.parse(raw);
-      } catch (e) {
-        throw new Error(raw || `HTTP ${res.status}`);
-      }
-
-      if (!res.ok || data.success === false) {
-        throw new Error(JSON.stringify(data, null, 2));
-      }
-
-      return data;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
+  `;
 
-    function showLoader() {
-      const spinner = document.getElementById("globalSpinner");
-      if (spinner) spinner.style.display = "flex";
-      blockUI(true);
-    }
+  document.head.appendChild(style);
+}
 
-    function hideLoader() {
-      const spinner = document.getElementById("globalSpinner");
-      if (spinner) spinner.style.display = "none";
-      blockUI(false);
-    }
+function logout() {
+  const token = localStorage.getItem("sessionToken");
 
-    function blockUI(state) {
-      const blocker = document.getElementById("uiBlocker");
-      if (blocker) blocker.style.display = state ? "block" : "none";
-    }
-
-    function setAllButtonsDisabled(state) {
-      document.querySelectorAll("button, input[type=button]").forEach(btn => {
-        btn.disabled = state;
-      });
-    }
-
-    function isMobileDevice() {
-      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
-      return (
-        /android|iphone|ipad|ipod|iemobile|opera mini|mobile/i.test(ua) ||
-        window.innerWidth <= 768 ||
-        window.matchMedia("(pointer: coarse)").matches
-      );
-    }
-
-    function routeDashboardPage() {
-      window.location.href = isMobileDevice() ? "0.html" : "1.html";
-    }
-
-    function requireLogin() {
-      const token = localStorage.getItem("sessionToken");
-      const profile = localStorage.getItem("userProfile");
-
-      if (!token || !profile) {
-        window.location.replace("index.html");
-        return false;
-      }
-
-      document.getElementById("userProfile").textContent = profile.toUpperCase();
-
-      apiJson("/validate", {
-        method: "POST",
-        body: JSON.stringify({ token })
-      })
-        .then(response => {
-          if (!response.valid) {
-            localStorage.clear();
-            window.location.replace("index.html");
-          }
-        })
-        .catch(err => {
-          console.log("VALIDATE ERROR:", err);
-        });
-
-      return true;
-    }
-
-    function startBtnLoading(btn) {
-      if (!btn) return;
-
-      const width = btn.offsetWidth;
-      const height = btn.offsetHeight;
-
-      btn.style.width = width + "px";
-      btn.style.height = height + "px";
-      btn.dataset.loading = "true";
-      btn.disabled = true;
-      btn.dataset.originalHtml = btn.innerHTML;
-      btn.innerHTML = '<i class="bi bi-arrow-repeat spin btn-spin"></i>';
-    }
-
-    function stopBtnLoading(btn) {
-      if (!btn) return;
-
-      btn.disabled = false;
-      btn.dataset.loading = "";
-      btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
-      btn.style.width = "";
-      btn.style.height = "";
-    }
-
-    function setStatus(data, isError = false) {
-      const box = document.getElementById("statusBox");
-      if (!box) return;
-
-      box.style.color = isError ? "#b00020" : "#1b1b1b";
-      box.textContent = typeof data === "string"
-        ? data
-        : JSON.stringify(data, null, 2);
-    }
-
-    function askConfirm(message) {
-      return new Promise(resolve => {
-        const modal = document.getElementById("confirmModal");
-        const modalText = document.getElementById("modalText");
-        const btnYes = document.getElementById("modalYes");
-        const btnNo = document.getElementById("modalNo");
-
-        modalText.innerHTML = message;
-        modal.style.display = "flex";
-
-        btnYes.onclick = null;
-        btnNo.onclick = null;
-
-        btnNo.onclick = function () {
-          modal.style.display = "none";
-          resolve(false);
-        };
-
-        btnYes.onclick = function () {
-          modal.style.display = "none";
-          resolve(true);
-        };
-      });
-    }
-
-    async function runSyncTask(btn) {
-      if (!btn || btn.dataset.loading) return;
-
-      const path = btn.dataset.path;
-      const isExport = btn.dataset.export === "1";
-
-      if (isExport) {
-        const ok = await askConfirm(
-          "EXPORT akan replace tab <b>RPCdata</b> dalam Google Sheet dengan data dari D1.<br><br>Teruskan?"
-        );
-        if (!ok) return;
-      }
-
-      startBtnLoading(btn);
-      setStatus(`Running ${path} ...`);
-
-      try {
-        const data = await apiJson(path, { method: isExport ? "POST" : "GET" });
-        setStatus(data);
-      } catch (err) {
-        console.error(err);
-        setStatus(err.message || String(err), true);
-        alert("Task failed. Check status box.");
-      } finally {
-        stopBtnLoading(btn);
-      }
-    }
-
-    function goPage(page) {
-      localStorage.setItem("lastDashboardPage", page);
-      window.location.href = page;
-    }
-
-    function showMasterChoice() {
-      const menu = document.getElementById("logoutMenu");
-      if (menu) menu.style.display = "none";
-
-      const oldOverlay = document.getElementById("choiceOverlay");
-      if (oldOverlay) oldOverlay.remove();
-
-      const modal = document.createElement("div");
-
-      modal.innerHTML = `
-        <div id="choiceOverlay" style="
-          position:fixed;
-          top:0;left:0;width:100%;height:100%;
-          background:rgba(0,0,0,0.6);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          z-index:10003;
-          padding:14px;
-        ">
-          <div id="choiceBox" style="
-            background: rgba(255,255,255,0.95);
-            padding:20px;
-            border-radius:16px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-            text-align:center;
-            width:280px;
-            max-width:100%;
-          ">
-            <h3 style="margin:0; color:#6f42c1;">Choose Page</h3>
-
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px;">
-              <button id="goDashboardChoice" class="choiceBtn">Dashboard</button>
-              <button id="goMonitorChoice" class="choiceBtn">Monitor</button>
-              <button id="goAdminChoice" class="choiceBtn">Admin</button>
-              <button id="goSyncChoice" class="choiceBtn">Sync</button>
-            </div>
-
-            <button id="goCancelChoice" class="cancelBtn">Cancel</button>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-
-      function showSpinner(message) {
-        const box = document.getElementById("choiceBox");
-        if (!box) return;
-
-        box.innerHTML = `
-          <div style="display:flex;flex-direction:column;align-items:center;">
-            <div style="
-              width:40px;height:40px;
-              border:4px solid #ddd;
-              border-top:4px solid #333;
-              border-radius:50%;
-              animation:spin 1s linear infinite;
-              margin-bottom:10px;
-            "></div>
-            <span>${message}</span>
-          </div>
-        `;
-      }
-
-      document.getElementById("goDashboardChoice").onclick = () => {
-        showSpinner("Opening Dashboard...");
-        setTimeout(() => routeDashboardPage(), 200);
-      };
-
-      document.getElementById("goMonitorChoice").onclick = () => {
-        showSpinner("Opening Monitor...");
-        setTimeout(() => goPage("monitor.html"), 200);
-      };
-
-      document.getElementById("goAdminChoice").onclick = () => {
-        showSpinner("Opening Admin...");
-        setTimeout(() => goPage("admin.html"), 200);
-      };
-
-      document.getElementById("goSyncChoice").onclick = () => {
-        showSpinner("Opening Sync...");
-        setTimeout(() => goPage("sync.html"), 200);
-      };
-
-      document.getElementById("goCancelChoice").onclick = () => {
-        const overlay = document.getElementById("choiceOverlay");
-        if (overlay) overlay.remove();
-      };
-    }
-
-    function handleLogoutClick() {
-      const role = (localStorage.getItem("userProfile") || "").toLowerCase();
-
-      if (role === "admin" || role === "mod") {
-        openLogoutMenu();
-      } else {
-        logout();
-      }
-    }
-
-    function openLogoutMenu() {
-      const menu = document.getElementById("logoutMenu");
-      if (!menu) return;
-      menu.style.display = menu.style.display === "block" ? "none" : "block";
-    }
-
-    document.addEventListener("click", event => {
-      const menu = document.getElementById("logoutMenu");
-      const btn = document.getElementById("logoutBtn");
-
-      if (!menu || !btn) return;
-
-      if (!menu.contains(event.target) && !btn.contains(event.target)) {
-        menu.style.display = "none";
-      }
+  fetch(`${cleanApiBase()}/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      token
+    })
+  })
+    .catch(err => {
+      console.log("LOGOUT ERROR:", err);
+    })
+    .finally(() => {
+      localStorage.clear();
+      window.location.replace("index.html");
     });
-
-    function setMenuLoading(activeBtn) {
-      const items = [
-        document.getElementById("masterChoiceBtn"),
-        document.getElementById("dashboardBtn"),
-        document.getElementById("monitorBtn"),
-        document.getElementById("adminBtn"),
-        document.getElementById("syncMenuBtn"),
-        document.getElementById("logoutMenuBtn")
-      ];
-
-      items.forEach(el => {
-        if (el) {
-          el.style.pointerEvents = "none";
-          el.style.opacity = "0.6";
-        }
-      });
-
-      if (activeBtn) activeBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
-    }
-
-    function goDashboard() {
-      const btn = document.getElementById("dashboardBtn");
-      if (btn?.dataset.loading) return;
-      btn.dataset.loading = "true";
-      setMenuLoading(btn);
-      routeDashboardPage();
-    }
-
-    function goMonitor() {
-      const btn = document.getElementById("monitorBtn");
-      if (btn?.dataset.loading) return;
-      btn.dataset.loading = "true";
-      setMenuLoading(btn);
-      window.location.href = "monitor.html";
-    }
-
-    function goAdmin() {
-      const btn = document.getElementById("adminBtn");
-      if (btn?.dataset.loading) return;
-      btn.dataset.loading = "true";
-      setMenuLoading(btn);
-      window.location.href = "admin.html";
-    }
-
-    function goSync() {
-      const btn = document.getElementById("syncMenuBtn");
-      if (btn?.dataset.loading) return;
-      btn.dataset.loading = "true";
-      setMenuLoading(btn);
-      window.location.href = "sync.html";
-    }
-
-    async function logout() {
-      setAllButtonsDisabled(true);
-
-      const logoutBtn = document.getElementById("logoutBtn");
-      if (logoutBtn) logoutBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
-
-      const token = localStorage.getItem("sessionToken");
-
-      try {
-        if (token) {
-          await apiJson("/logout", {
-            method: "POST",
-            body: JSON.stringify({ token })
-          });
-        }
-      } catch (err) {
-        console.log("LOGOUT ERROR:", err);
-      } finally {
-        localStorage.clear();
-        window.location.replace("index.html");
-      }
-    }
-
-    function logoutFromMenu() {
-      const btn = document.getElementById("logoutMenuBtn");
-      setMenuLoading(btn);
-      logout();
-    }
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      showLoader();
-
-      if (!requireLogin()) return;
-
-      hideLoader();
-
-      document.querySelectorAll(".sync-btn").forEach(btn => {
-        btn.addEventListener("click", function () {
-          runSyncTask(this);
-        });
-      });
-    });
-  </script>
+}
+</script>
 </body>
 </html>
