@@ -596,10 +596,25 @@ function updateOnHoldButton() {
 
   if (!holdData.rows.length) {
     container.style.display = "none";
+    syncHoldLayout();
     return;
   }
   btn.innerText = `${holdData.rows.length}`;
   container.style.display = "block";
+  syncHoldLayout();
+}
+
+function syncHoldLayout() {
+  const input = safeEl("searchTerm");
+  const hasHoldValue = hasHold();
+
+  if (!input) return;
+
+  if (hasHoldValue) {
+    input.classList.add("with-hold");
+  } else {
+    input.classList.remove("with-hold");
+  }
 }
 
 function syncCollectButton() {
