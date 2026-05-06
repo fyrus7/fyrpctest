@@ -850,7 +850,25 @@ function closeHoldModal() {
   setDisplay("holdModal", "none");
 }
 
+async function showCollectedStatus() {
+  const showCollected = safeEl("showCollected");
+  const icon = safeEl("showCollectedIcon");
+  if (icon) icon.className = "bi bi-arrow-repeat spin";
 
+  clearSearch();
+  if (showCollected) showCollected.disabled = true;
+
+  try {
+    const statusMessage = await apiText("/status");
+    displayStatus(statusMessage);
+  } catch (err) {
+    console.error(err);
+    displayStatus("<span style='color:red;'>Failed to load status</span>");
+  } finally {
+    if (showCollected) showCollected.disabled = false;
+    if (icon) icon.className = "bi bi-journal-text";
+  }
+}
 
 function displayStatus(statusMessage) {
   const container = safeEl("collectedStatusContainer");
@@ -1183,105 +1201,33 @@ document.addEventListener("keydown", function(e) {
   }
 });
 
-
-// new summary
-// Track whether the Balance card has been clicked or not
-let clickedBalance = false;
-
-// Function to load the summary card
 function loadSummaryCard() {
-  fetch(`${WORKER_API}/summary`)
-    .then(r => r.json())
-    .then(data => {
-      // Update the content of result with the normal summary card
-      document.getElementById('result').innerHTML = `
-        <div class="summary-card">
 
-          <div class="card-item">
-            <div class="label">TOTAL PARTICIPANT</div>
-            <div class="value">${data.total}</div>
-          </div>
+ fetch(`${WORKER_API}/summary`)
+  .then(r=>r.json())
+  .then(data=>{
 
-          <div class="card-item collected">
-            <div class="label">COLLECTED</div>
-            <div class="value">${data.collected}</div>
-          </div>
+    document.getElementById('result').innerHTML = `
+      <div class="summary-card">
 
-          <div id="balanceCard" class="card-item uncollected">
-            <div class="label">BALANCE</div>
-            <div class="value">${data.balance}</div>
-          </div>
-
+        <div class="card-item">
+          <div class="label">TOTAL PARTICIPANT</div>
+          <div class="value">${data.total}</div>
         </div>
-      `;
 
-      // Add event listener to the Balance card
-      const balanceCard = document.getElementById('balanceCard');
-      balanceCard.addEventListener('click', toggleBalance);
-    });
+        <div class="card-item collected">
+          <div class="label">COLLECTED</div>
+          <div class="value">${data.collected}</div>
+        </div>
+
+        <div class="card-item uncollected">
+          <div class="label">BALANCE</div>
+          <div class="value">${data.balance}</div>
+        </div>
+
+      </div>
+    `
+
+  })
+
 }
-
-// Function to toggle between showing Balance summary and Balance by category
-function toggleBalance() {
-  if (clickedBalance) {
-    // If clickedBalance is true, load the original summary card
-    loadSummaryCard();
-  } else {
-    // If clickedBalance is false, load the collected status table
-    showCollectedStatus();
-  }
-
-  // Toggle the clickedBalance state
-  clickedBalance = !clickedBalance;
-}
-
-// Function to show collected status
-function showCollectedStatus() {
-  fetch(`${WORKER_API}/status`)
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        const resultContainer = document.getElementById('result');
-        
-        // Build the table rows for displaying the status
-        let rowsHtml = data.status;
-        let totalCollected = data.totalCollected;
-        let totalTarget = data.totalTarget;
-
-        // Add the summary and balance rows
-        rowsHtml += `
-          <tr style="font-weight:bold; background:#f0f0f0;">
-            <td style="text-align:left; padding:8px;">Summary</td>
-            <td style="padding:8px;">${totalCollected}</td>
-            <td style="padding:8px;">${totalTarget}</td>
-          </tr>
-          <tr style="font-weight:bold; background:#e8faff;">
-            <td style="text-align:left; padding:8px;">Balance</td>
-            <td colspan="2" style="padding:8px;">${totalTarget - totalCollected}</td>
-          </tr>
-        `;
-
-        // Update the result container with the HTML table
-        resultContainer.innerHTML = `
-          <div style="display:flex; justify-content:center; margin-bottom:20px;">
-            <table border="1" cellspacing="0" style="border-collapse:collapse; text-align:center; width:100%;">
-              <tr>
-                <th style="text-align:left; padding:8px;">Category</th>
-                <th style="padding:8px;">Collected</th>
-                <th style="padding:8px;">Total</th>
-              </tr>
-              ${rowsHtml}
-            </table>
-          </div>
-        `;
-      } else {
-        console.error('Error fetching status:', data.error);
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching status:', error);
-    });
-}
-
-// Initialize the page with the summary card by default
-loadSummaryCard();w
