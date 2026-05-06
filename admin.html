@@ -334,6 +334,10 @@
       Monitor
     </div>
 
+    <div id="syncBtn" class="menu-item" onclick="goSync()">
+      Sync
+    </div>
+
     <div id="logoutMenuBtn" class="menu-item logout" onclick="logoutFromMenu()">
       Logout
     </div>
@@ -953,13 +957,15 @@ function stopBtnLoading(btn, originalText) {
 
     function goDashboard() {
       const btn = document.getElementById("dashboardBtn");
+      const monitorBtn = document.getElementById("monitorBtn");
+      const syncBtn = document.getElementById("syncBtn");
       const logoutBtn = document.getElementById("logoutMenuBtn");
 
       if (btn?.dataset.loading) return;
 
       btn.dataset.loading = "true";
 
-      [btn, logoutBtn].forEach(el => {
+      [btn, monitorBtn, syncBtn, logoutBtn].forEach(el => {
         if (el) {
           el.style.pointerEvents = "none";
           el.style.opacity = "0.6";
@@ -974,12 +980,14 @@ function stopBtnLoading(btn, originalText) {
     function goMonitor() {
       const btn = document.getElementById("monitorBtn");
       const logoutBtn = document.getElementById("logoutMenuBtn");
+      const dashboardBtn = document.getElementById("dashboardBtn");
+      const syncBtn = document.getElementById("syncBtn");
 
       if (btn?.dataset.loading) return;
 
       btn.dataset.loading = "true";
 
-      [btn, logoutBtn].forEach(el => {
+      [dashboardBtn, btn, syncBtn, logoutBtn].forEach(el => {
         if (el) {
           el.style.pointerEvents = "none";
           el.style.opacity = "0.6";
@@ -989,6 +997,28 @@ function stopBtnLoading(btn, originalText) {
       btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
 
       window.location.href = "monitor.html";
+    }
+
+    function goSync() {
+      const btn = document.getElementById("syncBtn");
+      const dashboardBtn = document.getElementById("dashboardBtn");
+      const monitorBtn = document.getElementById("monitorBtn");
+      const logoutBtn = document.getElementById("logoutMenuBtn");
+
+      if (btn?.dataset.loading) return;
+
+      btn.dataset.loading = "true";
+
+      [dashboardBtn, monitorBtn, btn, logoutBtn].forEach(el => {
+        if (el) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        }
+      });
+
+      btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+
+      window.location.href = "sync.html";
     }
 
     async function logout() {
@@ -1023,8 +1053,9 @@ function stopBtnLoading(btn, originalText) {
       const btn = document.getElementById("logoutMenuBtn");
       const dashboardBtn = document.getElementById("dashboardBtn");
       const monitorBtn = document.getElementById("monitorBtn");
+      const syncBtn = document.getElementById("syncBtn");
 
-      [dashboardBtn, monitorBtn, btn].forEach(el => {
+      [dashboardBtn, monitorBtn, syncBtn, btn].forEach(el => {
         if (el) {
           el.style.pointerEvents = "none";
           el.style.opacity = "0.6";
