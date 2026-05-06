@@ -1269,9 +1269,13 @@ async function handleCategoryBalance(env) {
 
     // 🔥 SORT HERE (WAJIB letak sini)
 result.sort((a, b) => {
-  const getNum = v => {
-    const m = String(v.category).match(/\d+/)
-    return m ? parseInt(m[0]) : 9999
+  const getNum = (v) => {
+    const cleaned = String(v.category)
+      .toUpperCase()
+      .replace(/\s+/g, '')   // remove spaces
+      .replace(/[^0-9]/g, '') // keep digits only
+
+    return cleaned ? parseInt(cleaned) : 9999
   }
 
   return getNum(a) - getNum(b)
