@@ -1798,16 +1798,19 @@ async function startScanner() {
   beepSound?.play();
   navigator.vibrate?.(100);
 
-  list.push(decodedText);
+ list.push(decodedText);
 
-  const newValue = list.join(", ");
-  input.value = newValue;
+const newValue = list.join(", ");
+input.value = newValue;
 
+// 🔥 STOP dulu scanner
+stopScanner();
+closeModal();
+
+// 🔥 BARU search (delay sikit wajib)
+setTimeout(() => {
   search(newValue);
-
-  // 🔥 CLOSE SCANNER SELEPAS SCAN
-  stopScanner();
-  closeModal();
+}, 100);
 },
     (errorMessage) => {
       console.log(errorMessage);
