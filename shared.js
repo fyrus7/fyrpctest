@@ -1201,33 +1201,73 @@ document.addEventListener("keydown", function(e) {
   }
 });
 
+
+// new summary
 function loadSummaryCard() {
 
- fetch(`${WORKER_API}/summary`)
-  .then(r=>r.json())
-  .then(data=>{
+  fetch(`${WORKER_API}/summary`)
+    .then(r => r.json())
+    .then(data => {
 
-    document.getElementById('result').innerHTML = `
-      <div class="summary-card">
+      const resultContainer = document.getElementById('result');
+      
+      // Normal Summary Card
+      resultContainer.innerHTML = `
+        <div class="summary-card">
 
-        <div class="card-item">
-          <div class="label">TOTAL PARTICIPANT</div>
-          <div class="value">${data.total}</div>
+          <div class="card-item">
+            <div class="label">TOTAL PARTICIPANT</div>
+            <div class="value">${data.total}</div>
+          </div>
+
+          <div class="card-item collected">
+            <div class="label">COLLECTED</div>
+            <div class="value">${data.collected}</div>
+          </div>
+
+          <div id="balanceCard" class="card-item uncollected">
+            <div class="label">BALANCE</div>
+            <div class="value">${data.balance}</div>
+          </div>
+
         </div>
+      `;
 
-        <div class="card-item collected">
-          <div class="label">COLLECTED</div>
-          <div class="value">${data.collected}</div>
-        </div>
+      // Add an event listener to toggle balance view by category
+      const balanceCard = document.getElementById('balanceCard');
+      balanceCard.addEventListener('click', () => toggleBalanceCategory(data));
 
-        <div class="card-item uncollected">
-          <div class="label">BALANCE</div>
-          <div class="value">${data.balance}</div>
-        </div>
+    });
+}
 
-      </div>
-    `
+function toggleBalanceCategory(data) {
+  const balanceCard = document.getElementById('balanceCard');
+  
+  // Check if it's showing normal balance
+  if (balanceCard.classList.contains('uncollected')) {
+    // Switch to balance by category
+    balanceCard.innerHTML = `
+      <div class="label">BALANCE BY CATEGORY</div>
+      <div class="value">${formatBalanceByCategory(data.balanceByCategory)}</div>
+    `;
+    balanceCard.classList.remove('uncollected');
+    balanceCard.classList.add('category');
+  } else {
+    // Revert back to normal balance view
+    balanceCard.innerHTML = `
+      <div class="label">BALANCE</div>
+      <div class="value">${data.balance}</div>
+    `;
+    balanceCard.classList.remove('category');
+    balanceCard.classList.add('uncollected');
+  }
+}
 
-  })
-
+function formatBalanceByCategory(balanceByCategory) {
+  // Assuming balanceByCategory is an object like {category1: 100, category2: 200}
+  let formatted = "";
+  for (let category in balanceByCategory) {
+    formatted += `<div>${category}: ${balanceByCategory[category]}</div>`;
+  }
+  return formatted;
 }
