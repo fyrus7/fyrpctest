@@ -1202,32 +1202,58 @@ document.addEventListener("keydown", function(e) {
 });
 
 function loadSummaryCard() {
+  fetch(`${WORKER_API}/summary`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('result').innerHTML = `
+        <div class="summary-card">
 
- fetch(`${WORKER_API}/summary`)
-  .then(r=>r.json())
-  .then(data=>{
+          <div class="card-item">
+            <div class="label">TOTAL PARTICIPANT</div>
+            <div class="value">${data.total}</div>
+          </div>
 
-    document.getElementById('result').innerHTML = `
-      <div class="summary-card">
+          <div class="card-item collected">
+            <div class="label">COLLECTED</div>
+            <div class="value">${data.collected}</div>
+          </div>
 
-        <div class="card-item">
-          <div class="label">TOTAL PARTICIPANT</div>
-          <div class="value">${data.total}</div>
+          <div class="card-item uncollected" id="balance-card">
+            <div class="label">BALANCE</div>
+            <div class="value">${data.balance}</div>
+          </div>
+
         </div>
+      `;
 
-        <div class="card-item collected">
-          <div class="label">COLLECTED</div>
-          <div class="value">${data.collected}</div>
-        </div>
+      // Add event listener to the Balance card
+      document.getElementById('balance-card').addEventListener('click', function () {
+        fetch(`${WORKER_API}/uncollected-status`)
+          .then(r => r.json())
+          .then(statusData => {
+            const statusContainer = document.createElement('div');
+            statusContainer.innerHTML = `
+              <h3>Uncollected Status</h3>
+              <table border="1" cellspacing="0" style="border-collapse: collapse; text-align: center; width: 100%;">
+                <tr>
+                  <th style="text-align:left; padding:8px;">Category</th>
+                  <th style="padding:8px;">Uncollected</th>
+                  <th style="padding:8px;">Total</th>
+                </tr>
+                ${statusData.status}
+              </table>
+              <p><strong>Total Uncollected: </strong>${statusData.totalUncollected}</p>
+              <p><strong>Total Target: </strong>${statusData.totalTarget}</p>
+              <p><strong>Balance: </strong>${statusData.balance}</p>
+            `;
 
-        <div class="card-item uncollected">
-          <div class="label">BALANCE</div>
-          <div class="value">${data.balance}</div>
-        </div>
-
-      </div>
-    `
-
-  })
-
+            // Append the status dynamically after the summary card
+            document.getElementById('result').appendChild(statusContainer);
+          })
+          .catch(error => {
+            console.error(error);
+            alert('Failed to load uncollected status.');
+          });
+      });
+    });
 }
