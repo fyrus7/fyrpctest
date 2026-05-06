@@ -779,19 +779,19 @@ body.dark-mode .dark-toggle-btn i {
 .summary-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 10px;
 
   align-items: center;   /* 🔥 center semua card */
 }
 
 .card-item {
-  width: 75%;            /* 🔥 kecilkan lebar */
-  max-width: 240px;      /* 🔥 limit supaya tak besar sangat */
+  width: 100%;            /* 🔥 kecilkan lebar */
+  max-width: 500px;      /* 🔥 limit supaya tak besar sangat */
   flex: 1;
   background: white;
-  border-radius: 10px;
-  padding: 8px;
+  border-radius: 12px;
+  padding: 12px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
@@ -807,6 +807,7 @@ body.dark-mode .dark-toggle-btn i {
   font-weight: bold;
 }
 
+
 .card-item.collected {
   background: #eaf7ee;
   color: #28a745;
@@ -820,16 +821,19 @@ body.dark-mode .dark-toggle-btn i {
 /* list scroll kalau panjang */
 .balance-list {
   margin-top: 10px;
-  max-height: 300px;
-  overflow-y: auto;
+  width: 100%;
+  max-width: 420;
+  max-height: none;
+  overflow-y: visible;
 }
 
 /* row layout */
 .balance-row {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  font-size: 14px;
+  padding: 8px 0;
+  font-size: 16px;
+  gap: 10px;
 }
 
 .cat {
