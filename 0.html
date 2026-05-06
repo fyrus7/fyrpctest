@@ -1080,8 +1080,9 @@
   font-weight: 600;
 }*/
 .balance-row {
+.balance-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 🔥 center keseluruhan group */
   align-items: center;
 
   padding: 6px 10px;
@@ -1092,18 +1093,18 @@
 
 /* kiri */
 .balance-row > :first-child {
-  flex: 1;
-  text-align: right;   /* 🔥 align kanan */
-  padding-right: 30px;
+  width: 140px;
+  text-align: right;
+  padding-right: 20px;
   font-weight: 600;
 }
 
 /* kanan */
 .balance-row > :last-child {
   width: 70px;
-  text-align: left;    /* 🔥 align kiri */
+  text-align: left;
 }
-a
+
 .dismiss-wrap {
   display: flex;
   justify-content: flex-end;
