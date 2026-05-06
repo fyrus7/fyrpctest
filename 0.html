@@ -1061,6 +1061,51 @@
   color: #856404;
 }
 
+        /* mode khas untuk category */
+.summary-card.category-mode {
+  align-items: stretch; /* 🔥 buang center */
+}
+
+.summary-card.category-mode .card-item {
+  width: 95%;
+  max-width: 420px; /* bagi luas sikit */
+  text-align: left; /* 🔥 kiri */
+}
+
+/* list styling */
+.balance-list {
+  margin-top: 10px;
+}
+
+.balance-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 4px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.balance-row .cat {
+  font-weight: 500;
+}
+
+.balance-row .num {
+  font-weight: bold;
+}
+
+/* dismiss kecil bawah kanan */
+.dismiss {
+  margin-top: 10px;
+  text-align: right;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.dismiss:hover {
+  opacity: 1;
+}
+        
 </style>
 
   <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
