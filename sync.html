@@ -159,7 +159,7 @@
       border: none;
       border-radius: 10px;
       padding: 16px 12px;
-      min-height: 74px;
+      min-height: 70px;
       color: white;
       font-weight: bold;
       cursor: pointer;
@@ -339,6 +339,14 @@
           <i class="bi bi-clock-history"></i>
         </button>
 
+        <button id="exportParticipantsBtn" class="sync-btn grey-btn" data-path="/export-participants-csv" data-download="1">
+  <span>
+    <span class="label">EXPORT PARTICIPANTS</span>
+    <span class="path">Download participants CSV</span>
+  </span>
+  <i class="bi bi-file-earmark-spreadsheet"></i>
+</button>
+
       <div id="statusBox" class="status-box">Ready.</div>
 
       <div class="note">
@@ -350,7 +358,7 @@
             <span class="label">EXPORT</span>
             <span class="path">/export-rpcdata-to-sheet</span>
           </span>
-          <i class="bi bi-cloud-upload"></i>
+          <i class="bi bi-cloud-download"></i>
         </button>
       </div>
     </div>
@@ -513,33 +521,60 @@
       });
     }
 
-    async function runSyncTask(btn) {
-      if (!btn || btn.dataset.loading) return;
+async function runSyncTask(btn) {
+  if (!btn || btn.dataset.loading) return;
 
-      const path = btn.dataset.path;
-      const isExport = btn.dataset.export === "1";
+  const path = btn.dataset.path;
+  const isExport = btn.dataset.export === "1";
+  const isDownload = btn.dataset.download === "1";
 
-      if (isExport) {
-        const ok = await askConfirm(
-          "EXPORT akan replace tab <b>RPCdata</b> dalam Google Sheet dengan data dari D1.<br><br>Teruskan?"
-        );
-        if (!ok) return;
+  if (isExport) {
+    const ok = await askConfirm(
+      "EXPORT akan replace tab <b>RPCdata</b> Google Sheet dengan data dari DB.<br><br>Teruskan?"
+    );
+    if (!ok) return;
+  }
+
+  startBtnLoading(btn);
+  setStatus(`Running ${path} ...`);
+
+  try {
+    if (isDownload) {
+      const res = await fetch(`${cleanApiBase()}${path}`);
+
+      if (!res.ok) {
+        const raw = await res.text();
+        throw new Error(raw || `HTTP ${res.status}`);
       }
 
-      startBtnLoading(btn);
-      setStatus(`Running ${path} ...`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
 
-      try {
-        const data = await apiJson(path, { method: isExport ? "POST" : "GET" });
-        setStatus(data);
-      } catch (err) {
-        console.error(err);
-        setStatus(err.message || String(err), true);
-        alert("Task failed. Check status box.");
-      } finally {
-        stopBtnLoading(btn);
-      }
+      a.href = url;
+      a.download = `participants-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      setStatus({
+        success: true,
+        task: "EXPORT_PARTICIPANTS_CSV",
+        message: "Participants CSV downloaded"
+      });
+    } else {
+      const data = await apiJson(path, { method: isExport ? "POST" : "GET" });
+      setStatus(data);
     }
+  } catch (err) {
+    console.error(err);
+    setStatus(err.message || String(err), true);
+    alert("Task failed. Check status box.");
+  } finally {
+    stopBtnLoading(btn);
+  }
+}
 
     function handleLogoutClick() {
       const role = (localStorage.getItem("userProfile") || "").toLowerCase();
