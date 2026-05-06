@@ -305,13 +305,12 @@
 
     <div class="section-card">
       <h2>Sync</h2>
-      <p>Sync Fresh data to DB and Export DB to Sheet (RPCdata tab).</p>
 
       <div class="sync-grid">
         <button id="syncRpcBtn" class="sync-btn primary-btn" data-path="/migrate-rpcdata-to-d1">
           <span>
             <span class="label">SYNC SHEET TO DB</span>
-            <span class="path">/migrate-rpcdata-to-d1</span>
+            <span class="path">Migrate RPCdata to DB</span>
           </span>
           <i class="bi bi-database-down"></i>
         </button>
@@ -319,7 +318,7 @@
         <button id="syncWalkinBtn" class="sync-btn success-btn" data-path="/migrate-walkin-to-d1">
           <span>
             <span class="label">SYNC WALKIN</span>
-            <span class="path">/migrate-walkin-to-d1</span>
+            <span class="path">Migrate Walkin data to DB</span>
           </span>
           <i class="bi bi-person-walking"></i>
         </button>
@@ -327,7 +326,7 @@
         <button id="syncUserBtn" class="sync-btn purple-btn" data-path="/migrate-userprofile-to-d1">
           <span>
             <span class="label">SYNC USER</span>
-            <span class="path">/migrate-userprofile-to-d1</span>
+            <span class="path">Migrate Userprofile to DB</span>
           </span>
           <i class="bi bi-people"></i>
         </button>
@@ -335,7 +334,7 @@
         <button id="syncSessionBtn" class="sync-btn dark-btn" data-path="/migrate-session-to-d1">
           <span>
             <span class="label">SYNC SESSION</span>
-            <span class="path">/migrate-session-to-d1</span>
+            <span class="path">Migrate Session to DB</span>
           </span>
           <i class="bi bi-clock-history"></i>
         </button>
@@ -343,7 +342,7 @@
       <div id="statusBox" class="status-box">Ready.</div>
 
       <div class="note">
-        EXPORT akan clear tab <b>RPCdata!A:S</b> di Google Sheet dan replace dengan data semasa dari D1. Gunakan bila D1 ialah source terbaru.
+        EXPORT akan clear tab <b>RPCdata!A:S</b> di Google Sheet dan replace dengan data semasa dari DB. Gunakan bila DB ialah source terbaru.
       </div>
 
         <button id="exportRpcBtn" class="sync-btn warning-btn" data-path="/export-rpcdata-to-sheet" data-export="1">
