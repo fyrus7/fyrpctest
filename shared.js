@@ -1202,25 +1202,80 @@ async function showCategoryBalance() {
 
     if (!data.success) throw new Error();
 
-    let html = `
-      <div class="balance-list">
-        <div class="title">CATEGORY BALANCE</div>
-    `;
+    let rows = "";
 
     data.data.forEach(item => {
-      html += `
+      rows += `
         <div class="balance-row">
           <div class="cat">${item.category}</div>
-          <div class="num">${item.balance}</div>
+          <div class="num ${item.balance > 0 ? 'red' : 'green'}">
+            ${item.balance}
+          </div>
         </div>
       `;
     });
 
-    html += `</div>`;
+    const html = `
+      <div class="summary-card category-mode">
 
-    displayStatus(html);
+        <div class="card-item full">
+
+          <div class="label">CATEGORY BALANCE</div>
+
+          <div class="balance-list">
+            ${rows}
+          </div>
+
+          <div class="dismiss" onclick="loadSummaryCard()">dismiss</div>
+
+        </div>
+
+      </div>
+    `;
+
+    // 🔥 IMPORTANT: replace terus card (bukan displayStatus lama)
+    document.getElementById('result').innerHTML = html;
 
   } catch (e) {
-    displayStatus("<span style='color:red;'>Failed to load category</span>");
+    document.getElementById('result').innerHTML =
+      "<span style='color:red;'>Failed to load category</span>";
+  }
+}
+
+
+async function handleCategoryBalance(env) {
+  try {
+    const rows = await env.DB.prepare(`
+      SELECT
+        category,
+        COUNT(*) AS total,
+        SUM(CASE WHEN upper(trim(status)) = 'COLLECTED' THEN 1 ELSE 0 END) AS collected
+      FROM participants
+      WHERE category IS NOT NULL AND trim(category) != ''
+      GROUP BY category
+    `).all()
+
+    const result = (rows.results || []).map(r => {
+      const total = Number(r.total) || 0
+      const collected = Number(r.collected) || 0
+
+      return {
+        category: r.category,
+        total,
+        collected,
+        balance: total - collected
+      }
+    })
+
+    // 🔥 SORT HERE (WAJIB letak sini)
+    result.sort((a, b) => {
+      const getNum = v => parseInt(String(v.category).match(/\d+/)) || 0
+      return getNum(a) - getNum(b)
+    })
+
+    return json({ success: true, data: result })
+
+  } catch (e) {
+    return json({ success: false, error: e.toString() }, 500)
   }
 }
