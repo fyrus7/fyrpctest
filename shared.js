@@ -1268,10 +1268,14 @@ async function handleCategoryBalance(env) {
     })
 
     // 🔥 SORT HERE (WAJIB letak sini)
-    result.sort((a, b) => {
-      const getNum = v => parseInt(String(v.category).match(/\d+/)) || 0
-      return getNum(a) - getNum(b)
-    })
+result.sort((a, b) => {
+  const getNum = v => {
+    const m = String(v.category).match(/\d+/)
+    return m ? parseInt(m[0]) : 9999
+  }
+
+  return getNum(a) - getNum(b)
+})
 
     return json({ success: true, data: result })
 
