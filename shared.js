@@ -1216,6 +1216,7 @@ function loadSummaryCard() {
 
       // Add event listener to the Balance card
       const balanceCard = document.getElementById('balanceCard');
+      balanceCard.style.cursor = "pointer"; // Make the Balance card clickable
       balanceCard.addEventListener('click', toggleBalance);
     });
 }
@@ -1284,4 +1285,3 @@ function showCollectedStatus() {
 
 // Initialize the page with the summary card by default
 loadSummaryCard();
-
