@@ -1237,16 +1237,15 @@ document.addEventListener("keydown", function(e) {
 
 
 // new summary
-function loadSummaryCard() {
+let clickedBalance = false; // Track whether Balance has been clicked
 
+// Function to load the summary card
+function loadSummaryCard() {
   fetch(`${WORKER_API}/summary`)
     .then(r => r.json())
     .then(data => {
-
-      const resultContainer = document.getElementById('result');
-      
-      // Normal Summary Card
-      resultContainer.innerHTML = `
+      // Update the content of result with the normal summary card
+      document.getElementById('result').innerHTML = `
         <div class="summary-card">
 
           <div class="card-item">
@@ -1267,41 +1266,74 @@ function loadSummaryCard() {
         </div>
       `;
 
-      // Add an event listener to toggle balance view by category
+      // Add event listener to the Balance card
       const balanceCard = document.getElementById('balanceCard');
-      balanceCard.addEventListener('click', () => toggleBalanceCategory(data));
-
+      balanceCard.addEventListener('click', toggleBalance);
     });
 }
 
-function toggleBalanceCategory(data) {
-  const balanceCard = document.getElementById('balanceCard');
-  
-  // Check if it's showing normal balance
-  if (balanceCard.classList.contains('uncollected')) {
-    // Switch to balance by category
-    balanceCard.innerHTML = `
-      <div class="label">BALANCE BY CATEGORY</div>
-      <div class="value">${formatBalanceByCategory(data.balanceByCategory)}</div>
-    `;
-    balanceCard.classList.remove('uncollected');
-    balanceCard.classList.add('category');
+// Function to toggle between showing Balance summary and Balance by category
+function toggleBalance() {
+  if (clickedBalance) {
+    // If clickedBalance is true, load the original summary card
+    loadSummaryCard();
   } else {
-    // Revert back to normal balance view
-    balanceCard.innerHTML = `
-      <div class="label">BALANCE</div>
-      <div class="value">${data.balance}</div>
-    `;
-    balanceCard.classList.remove('category');
-    balanceCard.classList.add('uncollected');
+    // If clickedBalance is false, load the collected status table
+    showCollectedStatus();
   }
+
+  // Toggle the clickedBalance state
+  clickedBalance = !clickedBalance;
 }
 
-function formatBalanceByCategory(balanceByCategory) {
-  // Assuming balanceByCategory is an object like {category1: 100, category2: 200}
-  let formatted = "";
-  for (let category in balanceByCategory) {
-    formatted += `<div>${category}: ${balanceByCategory[category]}</div>`;
-  }
-  return formatted;
+// Function to show collected status
+function showCollectedStatus() {
+  fetch(`${WORKER_API}/status`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        const resultContainer = document.getElementById('result');
+        
+        // Build the table rows for displaying the status
+        let rowsHtml = data.status;
+        let totalCollected = data.totalCollected;
+        let totalTarget = data.totalTarget;
+
+        // Add the summary and balance rows
+        rowsHtml += `
+          <tr style="font-weight:bold; background:#f0f0f0;">
+            <td style="text-align:left; padding:8px;">Summary</td>
+            <td style="padding:8px;">${totalCollected}</td>
+            <td style="padding:8px;">${totalTarget}</td>
+          </tr>
+          <tr style="font-weight:bold; background:#e8faff;">
+            <td style="text-align:left; padding:8px;">Balance</td>
+            <td colspan="2" style="padding:8px;">${totalTarget - totalCollected}</td>
+          </tr>
+        `;
+
+        // Update the result container with the HTML table
+        resultContainer.innerHTML = `
+          <div style="display:flex; justify-content:center; margin-bottom:20px;">
+            <table border="1" cellspacing="0" style="border-collapse:collapse; text-align:center; width:100%;">
+              <tr>
+                <th style="text-align:left; padding:8px;">Category</th>
+                <th style="padding:8px;">Collected</th>
+                <th style="padding:8px;">Total</th>
+              </tr>
+              ${rowsHtml}
+            </table>
+          </div>
+        `;
+      } else {
+        console.error('Error fetching status:', data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching status:', error);
+    });
 }
+
+// Initialize the page with the summary card by default
+loadSummaryCard();
+
