@@ -508,36 +508,22 @@ function normalizeSize(size) {
 
   let s = size.toUpperCase().replace(/\s+/g, "");
 
-  // =========================
-  // KEEP XS & XL (NO NUMBER)
-  // =========================
-  if (s === "XS" || s === "XL") return s;
-
-  // =========================
   // XXXL → 3XL
-  // =========================
   const xxlMatch = s.match(/^(X+)L$/);
   if (xxlMatch) {
-    const count = xxlMatch[1].length;
-
-    if (count === 1) return "XL"; // prevent 1XL
-    return count + "XL";
+    return xxlMatch[1].length + "XL";
   }
 
-  // =========================
   // XXS → 2XS
-  // =========================
   const xxsMatch = s.match(/^(X+)S$/);
   if (xxsMatch) {
-    const count = xxsMatch[1].length;
-
-    if (count === 1) return "XS"; // prevent 1XS
-    return count + "XS";
+    return xxsMatch[1].length + "XS";
   }
 
   // already numeric (3XL, 2XS)
   return s;
 }
+
 
 
 function togglePrint() {
@@ -615,29 +601,6 @@ function updateOnHoldButton() {
   btn.innerText = `${holdData.rows.length}`;
   container.style.display = "block";
 }
-
-const originalUpdateOnHoldButton = updateOnHoldButton;
-
-updateOnHoldButton = function () {
-  // call function asal dulu
-  originalUpdateOnHoldButton();
-
-  // lepas tu inject behavior baru (page ini sahaja)
-  const btn = document.getElementById("onHoldButton");
-  const input = document.getElementById("searchTerm");
-  const container = document.getElementById("onHoldContainer");
-
-  if (!btn || !input || !container) return;
-
-  const visible = container.style.display !== "none";
-
-  // show/hide button ikut container
-  btn.style.display = visible ? "flex" : "none";
-
-  // adjust input padding
-  input.classList.toggle("with-hold", visible);
-};
-
 
 function syncCollectButton() {
   const btn = safeEl("collectButton");
@@ -850,23 +813,17 @@ function closeHoldModal() {
   setDisplay("holdModal", "none");
 }
 
-// BARU
 async function showCollectedStatus() {
   const showCollected = safeEl("showCollected");
   const icon = safeEl("showCollectedIcon");
-
-  // loading icon
   if (icon) icon.className = "bi bi-arrow-repeat spin";
 
   clearSearch();
   if (showCollected) showCollected.disabled = true;
 
   try {
-    // ambil HTML terus dari backend
-    const html = await fetch("/showcollected").then(r => r.text());
-
-    displayStatus(html);
-
+    const statusMessage = await apiText("/status");
+    displayStatus(statusMessage);
   } catch (err) {
     console.error(err);
     displayStatus("<span style='color:red;'>Failed to load status</span>");
@@ -1207,6 +1164,8 @@ document.addEventListener("keydown", function(e) {
   }
 });
 
+
+
 function loadSummaryCard() {
 
  fetch(`${WORKER_API}/summary`)
@@ -1226,14 +1185,42 @@ function loadSummaryCard() {
           <div class="value">${data.collected}</div>
         </div>
 
-        <div class="card-item uncollected">
+        <div class="card-item uncollected" onclick="showCategoryBalance()">
           <div class="label">BALANCE</div>
           <div class="value">${data.balance}</div>
         </div>
 
       </div>
     `
-
   })
+}
 
+async function showCategoryBalance() {
+  try {
+    const res = await fetch(`${WORKER_API}/category-balance`);
+    const data = await res.json();
+
+    if (!data.success) throw new Error();
+
+    let html = `
+      <div class="balance-list">
+        <div class="title">CATEGORY BALANCE</div>
+    `;
+
+    data.data.forEach(item => {
+      html += `
+        <div class="balance-row">
+          <div class="cat">${item.category}</div>
+          <div class="num">${item.balance}</div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+
+    displayStatus(html);
+
+  } catch (e) {
+    displayStatus("<span style='color:red;'>Failed to load category</span>");
+  }
 }
