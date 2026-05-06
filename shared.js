@@ -1226,7 +1226,9 @@ async function showCategoryBalance() {
             ${rows}
           </div>
 
-          <div class="dismiss" onclick="loadSummaryCard()">dismiss</div>
+          <div class="dismiss-wrap">
+  <span class="dismiss" onclick="loadSummaryCard()">dismiss</span>
+</div>
 
         </div>
 
