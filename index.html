@@ -477,7 +477,6 @@ function showMasterChoice() {
           <button id="goDashboard" class="choiceBtn">Dashboard</button>
           <button id="goMonitor" class="choiceBtn">Monitor</button>
           <button id="goAdmin" class="choiceBtn">Admin</button>
-          <button id="goSync" class="choiceBtn">Sync</button>
         </div>
 
         <button id="goCancel" class="cancelBtn">Cancel</button>
@@ -524,11 +523,6 @@ function showMasterChoice() {
   document.getElementById("goAdmin").onclick = () => {
     showSpinner("Opening Admin...");
     setTimeout(() => goPage("admin.html"), 200);
-  };
-
-  document.getElementById("goSync").onclick = () => {
-    showSpinner("Opening Sync...");
-    setTimeout(() => goPage("sync.html"), 200);
   };
 
   document.getElementById("goCancel").onclick = () => {
