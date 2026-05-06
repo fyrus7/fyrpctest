@@ -850,24 +850,65 @@ function closeHoldModal() {
   setDisplay("holdModal", "none");
 }
 
-async function showCollectedStatus() {
-  const showCollected = safeEl("showCollected");
-  const icon = safeEl("showCollectedIcon");
-  if (icon) icon.className = "bi bi-arrow-repeat spin";
+// Function to fetch and display collected status
+function showCollectedStatus() {
+  fetch(`${WORKER_API}/status`)
+    .then(r => r.json())
+    .then(data => {
+      const resultContainer = document.getElementById('result');
+      
+      // Create a table to show the collected status
+      let rowsHtml = '';
+      let totalCollected = 0;
+      let totalTarget = 0;
 
-  clearSearch();
-  if (showCollected) showCollected.disabled = true;
+      // Loop through the data to build the table rows dynamically
+      data.forEach(row => {
+        const total = row.total || 0;
+        const collected = row.collected || 0;
+        
+        totalCollected += collected;
+        totalTarget += total;
 
-  try {
-    const statusMessage = await apiText("/status");
-    displayStatus(statusMessage);
-  } catch (err) {
-    console.error(err);
-    displayStatus("<span style='color:red;'>Failed to load status</span>");
-  } finally {
-    if (showCollected) showCollected.disabled = false;
-    if (icon) icon.className = "bi bi-journal-text";
-  }
+        rowsHtml += `
+          <tr>
+            <td style="text-align:left; padding:8px;">${row.category}</td>
+            <td style="padding:8px;">${collected}</td>
+            <td style="padding:8px;">${total}</td>
+          </tr>
+        `;
+      });
+
+      // Add the summary and balance rows
+      rowsHtml += `
+        <tr style="font-weight:bold; background:#f0f0f0;">
+          <td style="text-align:left; padding:8px;">Summary</td>
+          <td style="padding:8px;">${totalCollected}</td>
+          <td style="padding:8px;">${totalTarget}</td>
+        </tr>
+        <tr style="font-weight:bold; background:#e8faff;">
+          <td style="text-align:left; padding:8px;">Balance</td>
+          <td colspan="2" style="padding:8px;">${totalTarget - totalCollected}</td>
+        </tr>
+      `;
+
+      // Set the resultContainer's innerHTML to display the table
+      resultContainer.innerHTML = `
+        <div style="display:flex; justify-content:center; margin-bottom:20px;">
+          <table border="1" cellspacing="0" style="border-collapse:collapse; text-align:center; width:100%;">
+            <tr>
+              <th style="text-align:left; padding:8px;">Category</th>
+              <th style="padding:8px;">Collected</th>
+              <th style="padding:8px;">Total</th>
+            </tr>
+            ${rowsHtml}
+          </table>
+        </div>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching status:', error);
+    });
 }
 
 function displayStatus(statusMessage) {
