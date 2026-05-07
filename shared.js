@@ -1302,9 +1302,9 @@ rows += `
           <div class="balance-list">
 
            <div class="balance-header">
-            <div class="cat">CATEGORY</div>
+            <div class="cat">CAT</div>
             <div class="num">TOTAL</div>
-            <div class="num">BALANCE</div>
+            <div class="num">BAL</div>
             </div>
             ${rows}
           </div>
