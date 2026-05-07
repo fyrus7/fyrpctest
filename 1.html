@@ -609,9 +609,6 @@ position: relative;
   color: #000;
 }
 
-  </style>
-
-  <style>
 
 .top-toggle-bar {
   display: flex;
@@ -821,22 +818,34 @@ position: relative;
 }
 
 
+
+
 #collectSuccessCard {
   width: 420px !important;
   max-width: 420px !important;
-  margin: 20px auto !important;
+
   height: auto !important;
+
+  display: inline-block !important;
+
+  position: relative !important;
+
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+
+  margin: 20px auto !important;
 }
 
-/* IMPORTANT */
-.result-box.grid-view:has(#collectSuccessCard) {
-  display: flex !important;
-  justify-content: center;
+/* override grid */
+.result-box.grid-view > #collectSuccessCard {
+  justify-self: center !important;
+  align-self: start !important;
+
+  grid-column: 1 / -1 !important;
 }
 
-.result-box.grid-view #collectSuccessCard {
-  flex: 0 0 auto !important;
-}
+	  
 
 
     .spin {
