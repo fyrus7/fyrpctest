@@ -348,38 +348,26 @@
   display: none; /* 🚨 default sembunyi */
 }
 
-/* Desktop only */
 @media (min-width: 769px) {
 
-  #collectSuccessCard {
-    width: fit-content !important;
-    min-width: 380px;
-    max-width: 520px !important;
-
-    margin-left: auto !important;
-    margin-right: auto !important;
-
-    padding: 18px !important;
-  }
-
-  #collectSuccessCard > div:nth-child(2) {
-    min-width: 320px;
-  }
-
-}
-@media (min-width: 769px) {
-
-  #result {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+  .result-container {
+    justify-content: flex-start !important;
+    align-items: center;
+    padding-top: 20px !important;
   }
 
   #collectSuccessCard {
-    flex: 0 0 auto !important;
+    width: 420px !important;
+    max-width: 420px !important;
+    height: auto !important;
+
+    margin: 0 auto !important;
+
+    display: block !important;
+    flex: unset !important;
   }
 
-}
+}w
 .status-box {
           position: fixed; /* 🔥 tukar dari absolute */
 	      height: 100px;
