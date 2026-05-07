@@ -348,26 +348,41 @@
   display: none; /* 🚨 default sembunyi */
 }
 
-@media (min-width: 769px) {
+    .status-box {
+      position: absolute;
+      font-size: 20px;
+      font-weight: bold;
+      width: 340px;
+      border: 1px solid #455A64;
+      background: white;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* Initially hidden */
 
-  .result-container {
-    justify-content: flex-start !important;
-    align-items: center;
-    padding-top: 20px !important;
-  }
-
-  #collectSuccessCard {
-    width: 420px !important;
-    max-width: 420px !important;
-    height: auto !important;
-
-    margin: 0 auto !important;
-
-    display: block !important;
-    flex: unset !important;
-  }
-
-}w
+      /* Centering styles */
+      top: 145px; /* Adjusted from 180px */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+    }
+    .status-box p {
+      margin: 0; /* Remove the default top/bottom margin of the <p> tag */
+      font-size: 25px;
+    }
+    .ok-button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: lightgrey;
+      color: #455A64;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .ok-button:hover {
+      background-color: #ccc;
+    }
 
 
 .search-controls {
@@ -428,7 +443,7 @@
 }
 
     h1 {
-      font-size: 40px; // header text
+      font-size: 40px;
     }
 
 
