@@ -1069,9 +1069,8 @@
 .balance-header,
 .balance-row {
   display: grid;
-  grid-template-columns: 100px 60px 70px;
-  align-items: center;
-  column-gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr; /* Equal column widths */
+  gap: 10px; /* Space between columns */
   width: 100%;
   box-sizing: border-box;
   padding: 6px 10px;
@@ -1083,17 +1082,22 @@
   font-weight: 700;
   opacity: 0.65;
   letter-spacing: 1px;
+  text-align: center; /* Center header text */
+}
+
+.balance-row {
+  text-align: center; /* Center content */
 }
 
 .balance-row .cat,
 .balance-header .cat {
-  text-align: right;
+  text-align: center; /* Ensure text is centered */
   font-weight: 600;
 }
 
 .balance-row .num,
 .balance-header .num {
-  text-align: left;
+  text-align: center; /* Ensure text is centered */
 }
 
 .dismiss-wrap {
