@@ -820,29 +820,19 @@ position: relative;
 
 
 
+/* FORCE success mode */
+#result:has(#collectSuccessCard) {
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+/* actual card */
 #collectSuccessCard {
   width: 420px !important;
   max-width: 420px !important;
-
-  height: auto !important;
-
-  display: inline-block !important;
-
-  position: relative !important;
-
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-
   margin: 20px auto !important;
-}
-
-/* override grid */
-.result-box.grid-view > #collectSuccessCard {
-  justify-self: center !important;
-  align-self: start !important;
-
-  grid-column: 1 / -1 !important;
 }
 
 	  
