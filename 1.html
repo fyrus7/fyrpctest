@@ -674,61 +674,126 @@ position: relative;
 
 
 /* ===== WALKIN BOX (IMPROVED) ===== */
+
 .walkin-box {
   position: fixed;
-  top: 20%;
+  top: 12%;
   left: 50%;
   transform: translateX(-50%);
-
   width: 320px;
-  max-width: 90%;
+  max-width: 92%;
 
-  background: #ffffff;
-  border: 1px solid #455A64;
-  border-radius: 14px;
-
-  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  z-index: 10000;
+  display: none;
+  text-align: center;
+}
+
+.walkin-box h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.walkin-box .close {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.walkin-fields input {
+  width: 90%;
+  margin: 6px auto;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 13px;
+}
+
+.bib-chip-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bib-chip-row input {
+  width: 45%;
+}
+
+.category-box {
+  margin-top: 12px;
+}
+
+.dropdown-btn {
+  width: 92%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.walkin-dropdown-menu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 
   display: none;
   z-index: 10001;
-
-  text-align: center; /* 🔥 CENTER CONTENT */
-}
-.walkin-dropdown-menu {
-  position: fixed;
-  left: 50%;
-  top: 45%;
-  transform: translate(-50%, -60%) scale(0.95);
-  width: 260px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  display: none;
-  z-index: 9999;
-  padding: 10px 0;
-  transition: all 0.15s ease;
 }
 
 .walkin-dropdown-menu.show {
   display: block;
-  transform: translate(-50%, -50%) scale(1);
 }
-        
+
 .dropdown-item {
-  padding: 14px;
-  text-align: center;
+  padding: 12px;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
   border-bottom: 1px solid #eee;
-}
-.dropdown-item:last-child {
-  border-bottom: none;
 }
 
 .dropdown-item:hover {
-  background: #f2f2f2;
+  background: #f5f5f5;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.btn-row button {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+#walkinSubmitBtn {
+  background: linear-gradient(135deg,#6f42c1,#e83e8c);
+  color: #fff;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.loader {
+  display: none;
+  margin-top: 10px;
 }
 
 
