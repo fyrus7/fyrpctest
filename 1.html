@@ -348,6 +348,25 @@
   display: none; /* 🚨 default sembunyi */
 }
 
+/* Desktop only */
+@media (min-width: 769px) {
+
+  #collectSuccessCard {
+    width: fit-content !important;
+    min-width: 380px;
+    max-width: 520px !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    padding: 18px !important;
+  }
+
+  #collectSuccessCard > div:nth-child(2) {
+    min-width: 320px;
+  }
+
+}	  
 .status-box {
           position: fixed; /* 🔥 tukar dari absolute */
 	      height: 100px;
