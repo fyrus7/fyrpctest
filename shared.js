@@ -1293,7 +1293,7 @@ rows += `
     });
 
     const html = `
-      <div class="summary-card category-mode">
+      <div class="balance-card">
 
         <div class="card-item full">
 
