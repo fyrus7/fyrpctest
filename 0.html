@@ -1365,7 +1365,7 @@
 <!-- Footer Section -->
     <div id="footer">
         <div class="dropdown-container">
-            <div class="dropdown">
+ <!--           <div class="dropdown">
                 <button id="searchDropdownBtn" class="dropdown-btn">IC/ID/Name</button>
 
                 <div class="dropdown-menu">
@@ -1378,7 +1378,16 @@
             </div>
 
             <input type="hidden" id="searchOption" value="DEFAULT">
+-->
 
+             <select id="searchOption" class="dropdown-btn">
+                     <option value="DEFAULT">IC/ID/Name</option>
+                     <option value="A">Team</option>
+                     <option value="E">Email</option>
+                     <option value="F">BIB no</option>
+                     <option value="G">Collected</option>
+             </select>
+                
             <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
                 Add Runner
             </button>
