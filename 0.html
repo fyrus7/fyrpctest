@@ -925,7 +925,7 @@
         }
 
 
-
+/*
 .dropdown-menu {
   position: fixed;
   top: 50%;
@@ -945,7 +945,47 @@
   display: block;
   transform: translate(-50%, -50%) scale(1);
 }
+*/
+.footer-dropdown-menu {
+  position: absolute;
+  bottom: 60px;
+  left: 15%;
+  transform: translateX(-30%);
+  width: 130px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 2000;
+}
 
+.footer-dropdown-menu.show {
+  display: block;
+}
+
+.walkin-dropdown-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+
+  width: 260px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  display: none;
+  z-index: 9999;
+  padding: 10px 0;
+
+  transition: all 0.15s ease;
+}
+
+.walkin-dropdown-menu.show {
+  display: block;
+  transform: translate(-50%, -50%) scale(1);
+}
+        
 .dropdown-item {
   padding: 14px;
   text-align: center;
@@ -1337,7 +1377,7 @@
            <div class="dropdown">
                 <button id="searchDropdownBtn" class="dropdown-btn">IC/ID/Name</button>
 
-                <div class="dropdown-menu">
+               <div class="dropdown-menu footer-dropdown-menu">
                     <div class="dropdown-item" onclick="setOption('DEFAULT','IC/ID/Name')">IC/ID/Name</div>
                     <div class="dropdown-item" onclick="setOption('A','Team')">Team</div>
                     <div class="dropdown-item" onclick="setOption('E','Email')">Email</div>
@@ -1359,16 +1399,6 @@
                 <i class="bi bi-qr-code-scan"></i>
              </button>
           </div>
-
-    <!--  <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
-        <i class="bi bi-cart-plus" style="font-size: 20px;"></i>
-      </button>
-
-        <button id="showCollected" class="showCollectedbutton" onclick="showCollectedStatus()">
-            <i id="showCollectedIcon" class="bi bi-journal-text" style="font-size: 20px;"></i>
-        </button>
-    </div> -->
-
 
     <!-- WALKIN FORM -->
     <div id="walkinFormBox" class="walkin-box">
@@ -1398,13 +1428,11 @@
                     <button id="walkinDropdownBtn" class="dropdown-btn" style="width:92%; margin:auto;">
                         Select Category
                     </button>
-                    <div id="walkinDropdownMenu" class="dropdown-menu" style="width:92%;"></div>
+                   <div id="walkinDropdownMenu" class="walkin-dropdown-menu"></div>
                 </div>
 
                 <select id="walkinDistance" style="display:none;"></select>
-        <!--   <select id="walkinDistance" style="width:92%; padding:6px; border-radius:6px; border:1px solid #ccc; text-align:center; font-size:14px;">
-                <option>Loading...</option>
-            </select> -->
+
           </div>
         </div>
 
