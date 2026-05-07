@@ -968,16 +968,13 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.95);
-
   width: 260px;
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-
   display: none;
   z-index: 9999;
   padding: 10px 0;
-
   transition: all 0.15s ease;
 }
 
@@ -992,6 +989,10 @@
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
+  border-bottom: 1px solid #eee;
+}
+.dropdown-item:last-child {
+  border-bottom: none;
 }
 
 .dropdown-item:hover {
