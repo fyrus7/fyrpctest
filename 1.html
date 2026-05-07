@@ -9,21 +9,48 @@
       font-family: "Helvetica Neue", sans-serif, Arial;
     }
 
-    .logout-button {
-      position: absolute;
-      top: -40px;
-      right: -5px;
-    }
 
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 376px;
+  z-index: 9999;
+
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+        /* text dalam header */
+        .top-header #profileNameDisplay {
+          color: white !important;
+          font-size: 14px;
+        }
+
+        #profileNameDisplay {
+          color: white !important;
+        }
+
+        /* logout icon */
+        #logoutBtn {
+          color: white !important;
+        }
+		
 .toggle-btn {
   margin-top: 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   border: none;
-  border-radius: 5px;
+  border-radius: 30px;
   padding: 4px 14px;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   background-color: #4CAF50; /* hijau bila ON */
   color: white;
@@ -47,30 +74,45 @@
       position: relative;
       width: 350px;
     }
-    .search-box {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      box-sizing: border-box;
-      padding-right: 60px; /* bagi ruang untuk butang kat kanan */
-    }
-    #searchButton {
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: 50px;
-      background-color: #455A64;
-      color: #ffffff;
-      font-size: 16px;
-      border: none;
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      cursor: pointer;
-    }
-    #searchButton:hover {
-      background-color: #1C313A;
-    }
+        .search-box {
+          width: 100%;
+          padding: 12px 15px;
+          font-size: 15px;
+          box-sizing: border-box;
+          padding-right: 60px;
+
+          border-radius: 30px;
+          border: 1px solid #e0e0e0;
+
+          background: #fff;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .search-box:focus {
+          border-color: #e83e8c;
+          box-shadow: 0 4px 16px rgba(232,62,140,0.2);
+        }
+
+            #searchButton {
+              position: absolute;
+              top: 0;
+              right: 0;
+              height: 100%;
+              width: 50px;
+              background: linear-gradient(135deg, #6f42c1, #e83e8c);
+              color: #ffffff;
+              font-size: 16px;
+              border: none;
+              border-top-right-radius: 25px;
+              border-bottom-right-radius: 25px;
+              cursor: pointer;
+            }
+            #searchButton:hover {
+          opacity: 0.9;
+        }
         /* State disable */
        #searchButton:disabled {
          background-color: #455A64; /* sama macam normal */
@@ -97,8 +139,8 @@
   padding: 5px;
   cursor: pointer;
   color: #ffffff;
-  background-color: #455A64;
-  border-radius: 5px;
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  border-radius: 30px;
   border: none;
   transition: background-color 0.3s ease;
 }
@@ -243,10 +285,10 @@
 }
 
 .floating-select {
-  position: fixed;
-  bottom: 50px;
-  left: 270px;
-//  transform: translateX(-70%);
+  position: absolute;
+  bottom: 400px;
+  left: 65%;
+  transform: translateX(-30%);
   padding: 12px 22px;
   border-radius: 30px;
   border: none;
@@ -259,48 +301,22 @@
   display: none;
 }
 
-/* DARK MODE */
-body.dark-mode .result-item {
-  border: 1px solid rgba(255,255,255,0.3); /* border cerah dalam dark mode */
-  color: #000000; /* teks terang dalam dark mode */
-}
   
     .collect-box {
       margin-top: 70px;
       display: none;
     }
-/*
-    .collect-button {
-      width: 330px;
-      height: 35px;
-      font-size: 16px;
-      padding: 5px;
-      background-color: #007bff; /* #455A64; // green; 
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: none; /* Initially hidden 
-      transition: background-color 0.3s ease; /* Smooth transition for hover effect 
-    }
-    .collect-button:hover {
-      background-color: #1C313A; /* Hover background color 
-    }
-    .collect-button:disabled {
-      background-color: #9E9E9E; /* Grey 
-      cursor: not-allowed;
-      opacity: 0.8;
-    } */
+
 
     .collect-button {
       min-width: 150px;
       height: 35px;
       font-size: 16px;
       padding: 5px;
-      background-color: #007bff; /* #455A64; // green; */
+      background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 30px;
       cursor: pointer;
       display: none; /* Initially hidden */
       transition: background-color 0.3s ease; /* Smooth transition for hover effect */
@@ -387,7 +403,31 @@ body.dark-mode .result-item {
   border-radius: 5px;
   height: 35px;
 }
+#searchOption,
+.walkinButton {
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  border-radius: 30px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+}
+#searchOption {
+  background: linear-gradient(135deg, #6f42c1, #e83e8c);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
 
+/* dropdown list item */
+#searchOption option {
+  background: #2b2b2b;   /* penting: jangan putih */
+  color: #fff;
+}
 .showCollectedbutton {
   display: flex;
   align-items: center;
@@ -409,14 +449,11 @@ body.dark-mode .result-item {
   display: flex;
   align-items: center;
   justify-content: center;
-
   background-color: #455A64; /* sama style button lain */
   color: white;
   border: none;
   padding: 5px 10px;
-  border-radius: 5px;
   height: 35px;
-  cursor: pointer;
 }
 
 .walkinButton:hover {
@@ -440,13 +477,14 @@ html, body {
 }
 
 .left-panel {
+position: relative;
   width: 400px;
   background-color: #E8ECEF;
   padding: 10px 20px;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;  /* susun menegak */
-  height: 100vh;           /* penuh ketinggian skrin */
+  flex-direction: column;
+  height: 100vh;
 }
 
 /* ===== HOLD MODAL ===== */
@@ -598,38 +636,8 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between; /* atau gap je kalau nak rapat */
-  margin-top: 10px;
-}
-
-/* buang absolute */
-.dark-toggle-btn {
-  position: static; /* penting */
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 5px;
-}
-
-/* optional spacing kalau nak rapat */
-.top-toggle-bar {
-  gap: 10px;
-}
-
-/* Icon color ikut mode */
-.dark-toggle-btn i {
-  color: #202123; /* gelap untuk light mode */
-  font-size: 20px;
-  transition: color 0.2s;
-}
-
-body.dark-mode .dark-toggle-btn i {
-  color: #e4e6eb; /* terang dalam dark mode */
-}
-
-/* Hover effect lembut */
-.dark-toggle-btn:hover {
-  background-color: rgba(255,255,255,0.1);
+  margin-top: 20px;
+  border-radius: 30px;
 }
 
 
@@ -668,7 +676,7 @@ body.dark-mode .dark-toggle-btn i {
 /* ===== WALKIN BOX (IMPROVED) ===== */
 .walkin-box {
   position: fixed;
-  top: 2%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
 
@@ -683,7 +691,7 @@ body.dark-mode .dark-toggle-btn i {
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 
   display: none;
-  z-index: 1000;
+  z-index: 10001;
 
   text-align: center; /* 🔥 CENTER CONTENT */
 }
@@ -780,14 +788,15 @@ body.dark-mode .dark-toggle-btn i {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 10px;
-
-  align-items: center;   /* 🔥 center semua card */
+  position: absolute;
+  bottom: 100px;
+  left: 60%;
+  transform: translateX(-50%);
+  width: 300px;
 }
-
 .card-item {
-  width: 100%;            /* 🔥 kecilkan lebar */
-  max-width: 500px;      /* 🔥 limit supaya tak besar sangat */
+  width: 70%;
+  max-width: 400px;
   flex: 1;
   background: white;
   border-radius: 12px;
@@ -818,26 +827,33 @@ body.dark-mode .dark-toggle-btn i {
   color: #856404;
 }
 
-/* list scroll kalau panjang */
 .balance-list {
-  margin-top: 4px;
-  width: 100%;
-  max-width: 420;
-  max-height: none;
-  overflow-y: visible;
+  margin-top: 10px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
-/* row layout */
 .balance-row {
   display: flex;
-  justify-content: space-between;
-  padding: 4px 6px;
-  font-size: 20px;
-  line-height: 1.2;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 22px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.cat {
+/* kiri */
+.balance-row > :first-child {
+  width: 120px;
+  text-align: right;
+  padding-right: 35px;
   font-weight: 600;
+}
+
+/* kanan */
+.balance-row > :last-child {
+  width: 70px;
+  text-align: left;
 }
 
 .dismiss-wrap {
@@ -853,8 +869,6 @@ body.dark-mode .dark-toggle-btn i {
   user-select: none;
 }
 </style>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
     #logoutMenu {
@@ -987,21 +1001,19 @@ body.dark-mode .dark-toggle-btn i {
   <!-- LEFT PANEL -->
   <div class="left-panel">
 
-<div style="background-color: lightgrey; display: flex; justify-content: space-between; align-items: center; height: 30px; padding: 0 10px;">
-  <div class="profile-display" id="profileNameDisplay" style="font-size: 18px; color:#455A64; font-weight: bold;">
+<div class="top-header">
+  <div class="profile-display" id="profileNameDisplay" style="color:#455A64; font-weight: bold;">
     <i class="bi bi-person-badge"></i> <span id="userProfile"></span>
   </div>
+
   <button id="logoutBtn" type="button" onclick="handleLogoutClick()" style="font-size: 18px; background-color: transparent; color:#455A64; border: none; cursor: pointer">
-    <i class="bi bi-box-arrow-right" style="font-size: 22px"></i>
+    <i class="bi bi-box-arrow-right"></i>
   </button>
 </div>
 
 <div class="top-toggle-bar">
-  <!--  <button class="dark-toggle-btn" onclick="toggleDarkMode()">
-    <i class="bi bi-moon-fill"></i>
-  </button> -->
   <button id="printToggle" onclick="togglePrint()" class="toggle-btn off">
-    <i id="printIcon" class="bi bi-toggle-off"></i> Print: <b>OFF</b>
+    <i id="printIcon" class="bi bi-printer"></i><b>OFF</b>
   </button>
 </div>
 
@@ -1072,8 +1084,8 @@ body.dark-mode .dark-toggle-btn i {
     <!-- Collect -->
     <div id="collectBoxes" class="collect-box">
       collect by 
-      <input type="text" id="collectBy1" placeholder="Name" style="width: 100px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '');">
-      <input type="tel" id="collectBy2" placeholder="Phone Number" style="width: 100px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+      <input type="text" id="collectBy1" placeholder="Name" style="width: 100px; border: none; border-radius: 30px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '');">
+      <input type="tel" id="collectBy2" placeholder="Phone Number" style="width: 100px; border: none; border-radius: 30px; height: 10px; font-size: 12px; padding: 5px; margin-left: 5px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
       <br><br>
   <!-- wrapper untuk button -->
   <div class="collect-button-wrapper">
@@ -1081,6 +1093,8 @@ body.dark-mode .dark-toggle-btn i {
     <input type="button" id="collectButton" value="Collect" onclick="collect()" class="collect-button">
   </div>
     </div>
+	<div id="summaryPanel"></div>
+	<button id="selectAllBtn" class="floating-select">Select All</button>
   </div>
 
   <!-- RIGHT PANEL -->
@@ -1099,7 +1113,7 @@ body.dark-mode .dark-toggle-btn i {
   <div class="result-container">
     <div id="result" class="result-box" style="text-align: left;"></div>
   </div>
-  <button id="selectAllBtn" class="floating-select">Select All</button>
+  
 
   <div id="collectedStatusContainer" class="status-box">
     <div id="collectedStatus"></div>
@@ -1211,6 +1225,22 @@ body.dark-mode .dark-toggle-btn i {
   <script src="config.js"></script>
 
   <script>
+  const observer = new MutationObserver(() => {
+  const summary = document.querySelector("#result .summary-card");
+  const target = document.getElementById("summaryPanel");
+
+  if (summary && target) {
+    target.innerHTML = "";
+    target.appendChild(summary);
+  }
+});
+
+observer.observe(document.getElementById("result"), {
+  childList: true,
+  subtree: true
+});
+
+
   function setView(mode) {
   const box = document.querySelector(".result-box");
   const listBtn = document.getElementById("listViewBtn");

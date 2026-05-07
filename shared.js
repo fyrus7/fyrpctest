@@ -533,10 +533,10 @@ function togglePrint() {
 
   if (enablePrint) {
     button.classList.remove("off");
-    button.innerHTML = '<i id="printIcon" class="bi bi-toggle-on"></i> Print: <b>ON</b>';
+    button.innerHTML = '<i id="printIcon" class="bi bi-printer-fill"></i><b>ON</b>';
   } else {
     button.classList.add("off");
-    button.innerHTML = '<i id="printIcon" class="bi bi-toggle-off"></i> Print: <b>OFF</b>';
+    button.innerHTML = '<i id="printIcon" class="bi bi-printer"></i><b>OFF</b>';
   }
 }
 
@@ -1310,4 +1310,4 @@ async function showCategoryBalance() {
     document.getElementById('result').innerHTML =
       "<span style='color:red;'>Failed to load category</span>";
   }
-}q
+}
