@@ -1080,7 +1080,7 @@
 .balance-header,
 .balance-row {
   display: grid;
-  grid-template-columns: 120px 65px 75px;
+  grid-template-columns: 120px 70px 70px;
   justify-content: center;
   align-items: center;
   column-gap: 20px;
@@ -1108,6 +1108,11 @@
 .balance-row .num,
 .balance-header .num {
   text-align: left;
+}
+
+.balance-row .num:last-child,
+.balance-header .num:last-child {
+  transform: translateX(-12px);
 }
 
 .dismiss-wrap {
