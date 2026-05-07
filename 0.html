@@ -197,7 +197,7 @@
         #startButton i {
           font-size: 26px;
         }
-
+/*
         #searchOption {
           -webkit-appearance: none;
           -moz-appearance: none;
@@ -208,7 +208,7 @@
         #searchOption::-ms-expand {
           display: none;
         }
-/* custom serch option dropdown on footer
+*/
         #searchOption {
           appearance: none;
           background-color: transparent;
@@ -230,7 +230,7 @@
         #searchOption:focus {
            outline: none;
            box-shadow: 0 0 0 0.2rem rgba(28, 49, 58, 0.5);
-        } */
+        }
         #searchButton:disabled {
           background-color: #455A64; /* sama macam normal */
           color: #ffffff;
@@ -1376,7 +1376,19 @@
 <!-- Footer Section -->
     <div id="footer">
         <div class="dropdown-container">
- <!--           <div class="dropdown">
+
+        <button id="searchDropdownBtn" class="dropdown-btn" onclick="toggleSelect()">
+         IC/ID/Name
+        </button>
+                <select id="searchOption" onchange="updateLabel()" style="display:none;">
+                <option value="DEFAULT">IC/ID/Name</option>
+                <option value="A">Team</option>
+                <option value="E">Email</option>
+                <option value="F">BIB no</option>
+                <option value="G">Collected</option>
+                </select>
+        </div>
+    <!--            <div class="dropdown">
                 <button id="searchDropdownBtn" class="dropdown-btn">IC/ID/Name</button>
 
                 <div class="dropdown-menu">
@@ -1389,16 +1401,8 @@
             </div>
 
             <input type="hidden" id="searchOption" value="DEFAULT">
--->
 
-             <select id="searchOption" class="dropdown-btn">
-                     <option value="DEFAULT">IC/ID/Name</option>
-                     <option value="A">Team</option>
-                     <option value="E">Email</option>
-                     <option value="F">BIB no</option>
-                     <option value="G">Collected</option>
-             </select>
-                
+ -->
             <button id="walkinButton" class="walkinButton" type="button" onclick="openWalkinForm()">
                 Add Runner
             </button>
