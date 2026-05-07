@@ -1058,10 +1058,6 @@
   color: #856404;
 }
 
-/* =========================
-   BALANCE LIST CONTAINER
-========================= */
-
 .balance-list {
   margin-top: 10px;
   max-height: 500px;
@@ -1069,17 +1065,12 @@
   overflow-x: hidden;
 }
 
-/* =========================
-   HEADER + ROW GRID
-========================= */
-
 .balance-header,
 .balance-row {
   display: grid;
   grid-template-columns: 120px 70px 70px;
   column-gap: 12px;
   align-items: center;
-
   padding: 6px 10px;
   font-size: 22px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
@@ -1088,20 +1079,12 @@
   box-sizing: border-box;
 }
 
-/* =========================
-   HEADER STYLE
-========================= */
-
 .balance-header {
   font-size: 14px;
   font-weight: 700;
   opacity: 0.65;
   letter-spacing: 1px;
 }
-
-/* =========================
-   TEXT ALIGNMENT
-========================= */
 
 .balance-row .cat,
 .balance-header .cat {
@@ -1114,15 +1097,18 @@
   text-align: left;
 }
 
-/* =========================
-   PROGRESS BAR (FULL ROW)
-========================= */
+/* ONLY FIX: remove transform issue */
+.balance-row .num:last-child,
+.balance-header .num:last-child {
+  transform: none;
+}
 
+/* PROGRESS BAR FIX ONLY (no redesign) */
 .progress-bar {
   grid-column: 1 / -1;
-  height: 4px;
+  height: 5px;
   background: rgba(0,0,0,0.08);
-  border-radius: 999px;
+  border-radius: 10px;
   overflow: hidden;
   margin-top: 6px;
 }
@@ -1131,20 +1117,8 @@
   height: 100%;
   background: linear-gradient(90deg, #4caf50, #00c853);
   width: 0%;
-  transition: width 0.4s ease;
-  border-radius: 999px;
-}
-
-/* =========================
-   BALANCE COLOR STATES
-========================= */
-
-.balance-row .num.red {
-  color: #e53935;
-}
-
-.balance-row .num.green {
-  color: #2e7d32;
+  transition: width 0.3s ease;
+  border-radius: 10px;
 }
 
 .dismiss-wrap {
