@@ -946,16 +946,28 @@ function openWalkinForm() {
 
 function closeWalkinForm() {
   setDisplay("walkinFormBox", "none");
+
   const ids = ["walkinIC", "walkinName", "walkinBib", "walkinChip", "walkinContact", "walkinEmer"];
   ids.forEach(id => { const el = safeEl(id); if (el) el.value = ""; });
+
   const select = safeEl("walkinDistance");
   if (select) select.innerHTML = `<option>Loading...</option>`;
+
   confirmMode = false;
   setText("walkinError", "");
   setDisplay("walkinError", "none");
   setDisplay("confirmPreview", "none");
   setDisplay("walkinFields", "block");
-  if (safeEl("walkinSubmitBtn")) safeEl("walkinSubmitBtn").innerText = "SUBMIT";
+
+  if (safeEl("walkinSubmitBtn"))
+    safeEl("walkinSubmitBtn").innerText = "SUBMIT";
+
+  /* 🔥 ADD THIS PART */
+  const dd = safeEl("walkinDropdownMenu");
+  if (dd) dd.classList.remove("show");
+
+  const btn = safeEl("walkinDropdownBtn");
+  if (btn) btn.innerText = "Select Category";
 }
 
 function submitWalkinForm() {
