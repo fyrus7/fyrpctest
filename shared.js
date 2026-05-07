@@ -1293,7 +1293,7 @@ async function showCategoryBalance() {
 
         <div class="card-item full">
 
-          <div class="label">CATEGORY BALANCE</div>
+          <div class="label">OVERAL SUMMARY</div>
 
           <div class="balance-list">
 
