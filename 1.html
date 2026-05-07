@@ -821,15 +821,22 @@ position: relative;
 }
 
 
-.result-box.grid-view #collectSuccessCard {
-  grid-column: 1 / -1 !important;
-  justify-self: center !important;
-
+#collectSuccessCard {
   width: 420px !important;
   max-width: 420px !important;
-
+  margin: 20px auto !important;
   height: auto !important;
-}w
+}
+
+/* IMPORTANT */
+.result-box.grid-view:has(#collectSuccessCard) {
+  display: flex !important;
+  justify-content: center;
+}
+
+.result-box.grid-view #collectSuccessCard {
+  flex: 0 0 auto !important;
+}
 
 
     .spin {
