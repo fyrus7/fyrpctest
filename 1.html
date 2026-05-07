@@ -1543,6 +1543,25 @@ function logoutFromMenu() {
     logout();
   }, 50);
 }
+
+
+
+document.addEventListener("click", function (e) {
+           const btn = e.target.closest(".dropdown-btn");
+           const menus = document.querySelectorAll(".dropdown-menu");
+
+           menus.forEach(m => m.classList.remove("show"));
+
+           if (btn) {
+             const menu = btn.nextElementSibling;
+             if (menu) {
+               menu.classList.toggle("show");
+               e.stopPropagation();
+             }
+           }
+         });
+
+	  
 </script>
 
   <script src="shared.js"></script>
