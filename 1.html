@@ -695,7 +695,25 @@ position: relative;
 
   text-align: center; /* 🔥 CENTER CONTENT */
 }
+.walkin-dropdown-menu {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -60%) scale(0.95);
+  width: 260px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  display: none;
+  z-index: 9999;
+  padding: 10px 0;
+  transition: all 0.15s ease;
+}
 
+.walkin-dropdown-menu.show {
+  display: block;
+  transform: translate(-50%, -50%) scale(1);
+}
 /* Title */
 .walkin-box h3 {
   margin-top: 0;
@@ -1170,9 +1188,15 @@ position: relative;
         <div style="margin-top:20px;">
            <label style="font-weight:600; display:block; margin-bottom:4px;">Category:</label>
 
-           <select id="walkinDistance" style="width:92%; padding:6px; border-radius:6px; border:1px solid #ccc; text-align:center; font-size:14px;">
-                <option>Loading...</option>
-            </select>
+                <div class="dropdown">
+                    <button id="walkinDropdownBtn" class="dropdown-btn">
+                        Select Category
+                    </button>
+                   <div id="walkinDropdownMenu" class="walkin-dropdown-menu"></div>
+                </div>
+
+                <select id="walkinDistance" style="display:none;"></select>
+
           </div>
         </div>
 
@@ -1192,10 +1216,13 @@ position: relative;
         </div>
 
 <!--        <img id="walkinQR"
-             src="https://raw.githubusercontent.com/fyrus7/rpc_config/main/tngQR.png"
-             alt="QR Code"
-             style="width:230px;max-width:100%;display:block;margin:15px auto;" />
+                src="https://raw.githubusercontent.com/fyrus7/rpc_config/main/tngQR.png" alt="QR Code"
+                style="width:230px;max-width:100%;display:block;margin:15px auto;" />
 -->
+        <div id="walkinLoader" style="display:none; text-align:center; margin-top:15px;">
+            <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:#000;"></i>
+        </div>
+
         <div id="walkinLoader" style="display:none; text-align:center; margin-top:15px;">
             <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:#000;"></i>
         </div>
@@ -1208,6 +1235,7 @@ position: relative;
         <br>
         <button onclick="closeSuccessBox()">OK</button>
     </div>
+
 
 
 <div id="overlay">
