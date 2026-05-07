@@ -1275,19 +1275,21 @@ async function showCategoryBalance() {
     data.data.forEach(item => {
 rows += `
   <div class="balance-row">
+
     <div class="cat">${item.category}</div>
 
-    <div class="num">
-      ${item.total}
-    </div>
+    <div class="num">${item.total}</div>
 
     <div class="num ${item.balance > 0 ? 'red' : 'green'}">
       ${item.balance}
     </div>
 
     <div class="progress-bar">
-      <div class="progress-fill" style="width:${item.total ? (item.collected / item.total * 100) : 0}%"></div>
+      <div class="progress-fill"
+        style="width:${item.total ? (item.collected / item.total * 100) : 0}%">
+      </div>
     </div>
+
   </div>
 `;
     });
