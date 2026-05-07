@@ -1062,6 +1062,8 @@
   margin-top: 10px;
   max-height: 500px;
   overflow-y: auto;
+  width: 100%; /* Ensure it spans across */
+  box-sizing: border-box; /* Include padding/border in width calculation */
 }
 
 .balance-header,
@@ -1070,10 +1072,8 @@
   grid-template-columns: 100px 60px 70px;
   align-items: center;
   column-gap: 10px;
-
   width: 100%;
   box-sizing: border-box;
-
   padding: 6px 10px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
@@ -1095,7 +1095,6 @@
 .balance-header .num {
   text-align: left;
 }
-
 
 .dismiss-wrap {
   display: flex;
