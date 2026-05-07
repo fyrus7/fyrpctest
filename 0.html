@@ -1017,12 +1017,25 @@
   text-align: center;
 }
 
-
+/*
+#walkinDropdownMenu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width:200px;
+  bottom: 80px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  z-index: 2000;
+}
+*/
 .summary-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
+
   align-items: center;   /* 🔥 center semua card */
 }
 
@@ -1062,44 +1075,41 @@
   margin-top: 10px;
   max-height: 500px;
   overflow-y: auto;
-  width: 100%; /* Ensure it spans across */
-  box-sizing: border-box; /* Include padding/border in width calculation */
 }
 
-.balance-header,
-.balance-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Equal column widths */
-  gap: 10px; /* Space between columns */
-  width: 100%;
-  box-sizing: border-box;
+/* row layout */
+/*.balance-row {
+  display: flex;
+  justify-content: space-between;
   padding: 6px 10px;
+  font-size: 22px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.balance-header {
-  font-size: 14px;
-  font-weight: 700;
-  opacity: 0.65;
-  letter-spacing: 1px;
-  text-align: center; /* Center header text */
-}
-
+.cat {
+  font-weight: 600;
+}*/
 .balance-row {
-  text-align: center; /* Center content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 10px;
   font-size: 22px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.balance-row .cat,
-.balance-header .cat {
-  text-align: right; /* Ensure text is centered */
-  justify-self: end;
+/* kiri */
+.balance-row > :first-child {
+  width: 120px;
+  text-align: right;
+  padding-right: 35px;
   font-weight: 600;
 }
 
-.balance-row .num,
-.balance-header .num {
-  text-align: center; /* Ensure text is centered */
+/* kanan */
+.balance-row > :last-child {
+  width: 70px;
+  text-align: left;
 }
 
 .dismiss-wrap {
