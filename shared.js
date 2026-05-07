@@ -1273,19 +1273,23 @@ async function showCategoryBalance() {
     let rows = "";
 
     data.data.forEach(item => {
-      rows += `
-       <div class="balance-row">
-        <div class="cat">${item.category}</div>
-        
-        <div class="num total">
-         ${item.total}
-        </div>
-        
-        <div class="num ${item.balance > 0 ? 'red' : 'green'}">
-          ${item.balance}
-        </div>
-      </div>
-    `;
+rows += `
+  <div class="balance-row">
+    <div class="cat">${item.category}</div>
+
+    <div class="num">
+      ${item.total}
+    </div>
+
+    <div class="num ${item.balance > 0 ? 'red' : 'green'}">
+      ${item.balance}
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:${item.total ? (item.collected / item.total * 100) : 0}%"></div>
+    </div>
+  </div>
+`;
     });
 
     const html = `
