@@ -1066,22 +1066,21 @@
 
 .balance-header,
 .balance-row {
+  display: grid;
+  grid-template-columns: 120px 65px 60px;
+  align-items: center;
+  column-gap: 10px;
+
   width: 100%;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 120px 1fr 1fr;
-  justify-content: center;
-  align-items: center;
-  column-gap: 20px;
-  padding: 6px 10px 2px 10px;
-  font-size: 20px;
+
+  padding: 6px 10px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
-  position: relative;
 }
 
 .balance-header {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   opacity: 0.65;
   letter-spacing: 1px;
 }
@@ -1097,26 +1096,6 @@
   text-align: left;
 }
 
-.balance-row .num:last-child,
-.balance-header .num:last-child {
-}
-.progress-bar {
-  grid-column: 1 / -1;
-  width: 80%;
-  justify-self: center;
-  height: 3px;
-  background: rgba(0,0,0,0.06);
-  border-radius: 999px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4caf50, #00c853);
-  width: 0%;
-  transition: width 0.4s ease;
-  border-radius: 999px;
-}
 
 .dismiss-wrap {
   display: flex;
