@@ -1274,13 +1274,18 @@ async function showCategoryBalance() {
 
     data.data.forEach(item => {
       rows += `
-        <div class="balance-row">
-          <div class="cat">${item.category}</div>
-          <div class="num ${item.balance > 0 ? 'red' : 'green'}">
-            ${item.balance}
-          </div>
+       <div class="balance-row">
+        <div class="cat">${item.category}</div>
+        
+        <div class="num total">
+         ${item.total}
         </div>
-      `;
+        
+        <div class="num ${item.balance > 0 ? 'red' : 'green'}">
+          ${item.balance}
+        </div>
+      </div>
+    `;
     });
 
     const html = `
@@ -1291,6 +1296,12 @@ async function showCategoryBalance() {
           <div class="label">CATEGORY BALANCE</div>
 
           <div class="balance-list">
+
+           <div class="balance-header">
+            <div class="cat">CATEGORY</div>
+            <div class="num">TOTAL</div>
+            <div class="num">BALANCE</div>
+            </div>
             ${rows}
           </div>
 
