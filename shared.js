@@ -866,32 +866,73 @@ function dismissCollectedStatus() {
 
 async function loadWalkinCategories() {
   const select = safeEl("walkinDistance");
+  const btn = safeEl("walkinDropdownBtn");
+  const menu = safeEl("walkinDropdownMenu");
   const submitBtn = safeEl("walkinSubmitBtn");
-  if (!select || !submitBtn) return;
+
+  if (!select || !btn || !menu || !submitBtn) return;
 
   select.innerHTML = `<option>Updating...</option>`;
+  btn.innerText = "Updating...";
+  menu.innerHTML = "";
   submitBtn.disabled = true;
 
   try {
     const res = await apiJson("/walkin-categories");
+
     if (!res.enabled || !res.categories || !res.categories.length) {
       select.innerHTML = `<option>NOT AVAILABLE</option>`;
+      btn.innerText = "NOT AVAILABLE";
+      menu.innerHTML = `<div class="dropdown-item">NOT AVAILABLE</div>`;
       submitBtn.disabled = true;
       return;
     }
 
     select.innerHTML = "";
+    menu.innerHTML = "";
+
+    let firstValid = null;
+
     res.categories.forEach(cat => {
+      // sync hidden select
       const opt = document.createElement("option");
       opt.value = cat.value;
       opt.textContent = cat.label;
       if (cat.disabled) opt.disabled = true;
       select.appendChild(opt);
+
+      // custom dropdown UI
+      const item = document.createElement("div");
+      item.className = "dropdown-item";
+      item.textContent = cat.label;
+
+      if (cat.disabled) {
+        item.style.opacity = "0.4";
+      } else {
+        if (!firstValid) firstValid = cat;
+
+        item.onclick = () => {
+          btn.innerText = cat.label;
+          select.value = cat.value;
+          menu.classList.remove("show");
+        };
+      }
+
+      menu.appendChild(item);
     });
+
+    if (firstValid) {
+      btn.innerText = firstValid.label;
+      select.value = firstValid.value;
+    }
+
     submitBtn.disabled = res.categories.every(c => c.disabled);
+
   } catch (err) {
     console.error(err);
     select.innerHTML = `<option>ERROR</option>`;
+    btn.innerText = "ERROR";
+    menu.innerHTML = `<div class="dropdown-item">ERROR</div>`;
     submitBtn.disabled = true;
   }
 }
