@@ -293,7 +293,13 @@ async function collect() {
     );
 // new data end
     if (resultContainer) {
-      resultContainer.innerHTML = '<div style="padding:10px; border:1px solid green; color:green; font-weight:bold;">✅ SUCCESSFULL</div>';
+   //   resultContainer.innerHTML = '<div style="padding:10px; border:1px solid green; color:green; font-weight:bold;">✅ SUCCESSFULL</div>';
+      resultContainer.innerHTML = '';
+        setDisplay("collectBoxes", "none");
+        setDisplay("collectButton", "none");
+        setDisplay("holdButton", "none");
+        setDisplay("selectAllBtn", "none");
+        setDisplay("clearButtonContainer", "none");
     }
 
     if (!isMobileDevice() && enablePrint) {
