@@ -1582,6 +1582,15 @@ document.addEventListener("click", function (e) {
 <script>
 	// AFTER COLLECT CARD
 function showCollectSuccessCard(dataList, onDismiss) {
+
+// HIDE UI SEARCH CONTROLS
+setText("resultCount", "");
+setDisplay("collectBoxes", "none");
+setDisplay("collectButton", "none");
+setDisplay("holdButton", "none");
+setDisplay("selectAllBtn", "none");
+setDisplay("clearButtonContainer", "none");
+	
   const layer = safeEl("collectSuccessLayer");
   if (!layer) return;
 
