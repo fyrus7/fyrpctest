@@ -292,14 +292,9 @@ async function collect() {
       `${item.valueBIB} ${item.valueSIZE ? "(" + item.valueSIZE + ")" : ""}`.trim()
     );
 // new data end
-    if (resultContainer) {
+    if (resultContainer) {  // ORIGINAL SUCCESSFULL NOTIFY AFTER COLLECT DONE
    //   resultContainer.innerHTML = '<div style="padding:10px; border:1px solid green; color:green; font-weight:bold;">✅ SUCCESSFULL</div>';
       resultContainer.innerHTML = '';
-        setDisplay("collectBoxes", "none");
-        setDisplay("collectButton", "none");
-        setDisplay("holdButton", "none");
-        setDisplay("selectAllBtn", "none");
-        setDisplay("clearButtonContainer", "none");
     }
 
     if (!isMobileDevice() && enablePrint) {
