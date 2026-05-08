@@ -166,6 +166,18 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+	position: relative;
+}
+
+/* CENTER LAYER DALAM PANEL */
+#collectSuccessLayer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  max-width: 90%;
+  z-index: 999;
 }
 
 .result-container {
@@ -1005,15 +1017,6 @@ position: relative;
     }
 
     
-#collectSuccessLayer {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 420px;
-  max-width: 90%;
-  z-index: 99999;
-}
 </style>
 
   <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
