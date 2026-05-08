@@ -1541,7 +1541,7 @@ function logoutFromMenu() {
   const adminBtn = document.getElementById("adminBtn");
   const monitorBtn = document.getElementById("monitorBtn");
 
-  [dashboardBtn, monitorBtn, btn].forEach(el => {
+  [adminBtn, monitorBtn, btn].forEach(el => {
     if (el) {
       el.style.pointerEvents = "none";
       el.style.opacity = "0.6";
