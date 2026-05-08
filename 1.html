@@ -1564,6 +1564,148 @@ document.addEventListener("click", function (e) {
 	  
 </script>
 
+
+<script>
+	// AFTER COLLECT CARD
+function showCollectSuccessCard(dataList, onDismiss) {
+  const resultContainer = safeEl("result");
+  if (!resultContainer) return;
+
+  const sizeMap = {};
+
+  const items = (dataList || []).map(item => {
+    let bib = "";
+    let size = "";
+
+    const match = item.match(/\((.*?)\)/);
+
+    if (match) {
+      size = (match[1] || "").trim();
+    }
+
+    bib = item.replace(/\(.*?\)/g, "").trim();
+
+    if (size) {
+      const raw = size.toLowerCase().trim();
+
+      if (!["na", "n/a", "nil", "-"].includes(raw)) {
+        const normalized = normalizeSize(size);
+        sizeMap[normalized] = (sizeMap[normalized] || 0) + 1;
+      }
+    }
+
+    return `
+      <div style="
+        display:grid;
+        grid-template-columns: 1fr 80px;
+        align-items:center;
+        padding:8px 0;
+        border-bottom:1px solid rgba(0,0,0,0.06);
+        font-size:15px;
+        font-weight:600;
+        gap:10px;
+      ">
+        <div style="
+          overflow:hidden;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+        ">
+          ${bib}
+        </div>
+
+        <div style="
+          text-align:right;
+          opacity:0.7;
+        ">
+          ${size || "-"}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const sizeKeys = Object.keys(sizeMap)
+    .filter(k => k && !["na", "n/a", "nil", "-"].includes(k.toLowerCase()))
+    .sort((a, b) => getSizeValue(a) - getSizeValue(b));
+
+  let summaryText = "";
+
+  if (sizeKeys.length > 1) {
+    summaryText = sizeKeys
+      .map(k => `${k} (${sizeMap[k]})`)
+      .join(" / ");
+  }
+
+  resultContainer.innerHTML = `
+    <div id="collectSuccessCard" style="
+      width: 460px;
+      max-width: 95%;
+      margin: 20px auto;
+
+      padding:15px;
+      border:1px solid #28a745;
+      background:#eaffea;
+      color:#1b5e20;
+      border-radius:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.15);
+    ">
+
+      <div style="
+        font-size:20px;
+        margin-bottom:14px;
+        text-align:center;
+        font-weight:bold;
+      ">
+        SUCCESSFULLY COLLECTED
+      </div>
+
+      <div style="
+        background:#ffffffcc;
+        padding:12px;
+        border-radius:10px;
+        max-height:420px;
+        overflow-y:auto;
+      ">
+        ${items}
+
+        <div style="
+          margin-top:12px;
+          text-align:right;
+          font-size:13px;
+          font-weight:700;
+          opacity:0.85;
+        ">
+          ${summaryText || ""}
+        </div>
+      </div>
+
+      <div class="dismiss-btn" style="
+        font-size:11px;
+        text-align:right;
+        opacity:0.7;
+        margin-top:8px;
+        cursor:pointer;
+      ">
+        dismiss
+      </div>
+
+    </div>
+  `;
+
+  const card = document.getElementById("collectSuccessCard");
+
+  if (!card) return;
+
+  const dismissBtn = card.querySelector(".dismiss-btn");
+
+  if (dismissBtn) {
+    dismissBtn.onclick = (e) => {
+      e.stopPropagation();
+      onDismiss?.();
+    };
+  }
+}
+</script>
+	
   <script src="shared.js"></script>
 
 </body>
