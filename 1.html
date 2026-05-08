@@ -1005,7 +1005,15 @@ position: relative;
     }
 
     
-
+#collectSuccessLayer {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: 90%;
+  z-index: 99999;
+}
 </style>
 
   <link rel="stylesheet" href="Bootstrap/bootstrap-icons.min.css">
@@ -1147,6 +1155,9 @@ position: relative;
     <i class="bi bi-grid"></i>
   </button>
 </div>
+
+	<div id="collectSuccessLayer"></div>
+	
       <div id="message"></div>
   <div class="result-container">
     <div id="result" class="result-box" style="text-align: left;"></div>
@@ -1568,8 +1579,8 @@ document.addEventListener("click", function (e) {
 <script>
 	// AFTER COLLECT CARD
 function showCollectSuccessCard(dataList, onDismiss) {
-  const resultContainer = safeEl("result");
-  if (!resultContainer) return;
+  const layer = safeEl("collectSuccessLayer");
+  if (!layer) return;
 
   const sizeMap = {};
 
@@ -1605,60 +1616,49 @@ function showCollectSuccessCard(dataList, onDismiss) {
     `;
   }).join("");
 
-  // ❗ CREATE TEMP BLOCK
-  const existing = document.getElementById("collectSuccessTemp");
-  if (existing) existing.remove();
-
-  const temp = document.createElement("div");
-  temp.id = "collectSuccessTemp";
-  temp.style.cssText = `
-    margin:10px auto;
-    width:90%;
-    max-width:420px;
-    padding:10px;
-    border:1px solid #28a745;
-    background:#eaffea;
-    border-radius:10px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.15);
-  `;
-
-  temp.innerHTML = `
+  layer.innerHTML = `
     <div style="
-      text-align:center;
-      font-weight:700;
-      color:green;
-      margin-bottom:8px;
+      padding:12px;
+      background:#eaffea;
+      border:1px solid #28a745;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
     ">
-      SUCCESSFULLY COLLECTED
-    </div>
 
-    <div style="
-      background:#fff;
-      padding:8px;
-      border-radius:8px;
-      max-height:220px;
-      overflow-y:auto;
-    ">
-      ${items}
-    </div>
+      <div style="
+        text-align:center;
+        font-weight:700;
+        color:green;
+        margin-bottom:8px;
+      ">
+        SUCCESSFULLY COLLECTED
+      </div>
 
-    <div style="
-      text-align:right;
-      font-size:11px;
-      opacity:0.6;
-      margin-top:6px;
-      cursor:pointer;
-    " id="dismissCollectTemp">
-      dismiss
+      <div style="
+        background:#fff;
+        padding:8px;
+        border-radius:8px;
+        max-height:250px;
+        overflow-y:auto;
+      ">
+        ${items}
+      </div>
+
+      <div style="
+        text-align:right;
+        font-size:11px;
+        opacity:0.6;
+        margin-top:6px;
+        cursor:pointer;
+      " id="dismissCollect">
+        dismiss
+      </div>
+
     </div>
   `;
 
-  // 🔥 inject WITHOUT touching result card
-  resultContainer.appendChild(temp);
-
-  // dismiss
-  temp.querySelector("#dismissCollectTemp").onclick = () => {
-    temp.remove();
+  layer.querySelector("#dismissCollect").onclick = () => {
+    layer.innerHTML = "";
     onDismiss?.();
   };
 }
