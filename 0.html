@@ -1959,6 +1959,17 @@ function resetUI() {
 <script>
 	// AFTER SUCCESS CARD
 	function showCollectSuccessCard(dataList, onDismiss) {
+
+		// HIDE UI SEARCH CONTROLS
+		const input = safeEl("searchTerm");
+		if (input) input.value = "";
+		setText("resultCount", "");
+		setDisplay("collectBoxes", "none");
+		setDisplay("collectButton", "none");
+		setDisplay("holdButton", "none");
+		setDisplay("selectAllBtn", "none");
+		setDisplay("clearButtonContainer", "none");
+		
   const resultContainer = safeEl("result");
   if (!resultContainer) return;
 
