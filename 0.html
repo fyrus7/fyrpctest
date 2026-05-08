@@ -1955,6 +1955,136 @@ function resetUI() {
 
 </script>
 
+	
+<script>
+	// AFTER SUCCESS CARD
+	function showCollectSuccessCard(dataList, onDismiss) {
+  const resultContainer = safeEl("result");
+  if (!resultContainer) return;
+
+  const sizeMap = {};
+
+  const items = (dataList || []).map(item => {
+    let bib = "";
+    let size = "";
+
+    const match = item.match(/\((.*?)\)/);
+    if (match) size = (match[1] || "").trim();
+
+    const cleaned = item.replace(/\(.*?\)/g, "").trim();
+    bib = cleaned;
+
+    const s = size.toLowerCase();
+
+    // COUNT SIZE (ignore invalid)
+if (size) {
+  const raw = size.toLowerCase().trim();
+
+  if (!["na", "n/a", "nil", "-"].includes(raw)) {
+    const normalized = normalizeSize(size);
+    sizeMap[normalized] = (sizeMap[normalized] || 0) + 1;
+  }
+}
+
+    return `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        padding:6px 0;
+        border-bottom:1px solid rgba(0,0,0,0.06);
+        font-size:15px;
+        font-weight:600;
+      ">
+        <span>${bib}</span>
+        <span style="opacity:0.7;">${size || "-"}</span>
+      </div>
+    `;
+  }).join("");
+
+  // SORT SIZE (AUTO SMART)
+  const sizeKeys = Object.keys(sizeMap)
+    .filter(k => k && !["na", "n/a", "nil", "-"].includes(k.toLowerCase()))
+    .sort((a, b) => getSizeValue(a) - getSizeValue(b));
+
+  let summaryText = "";
+
+  if (sizeKeys.length > 1) {
+    summaryText = sizeKeys
+      .map(k => `${k} (${sizeMap[k]})`)
+      .join(" / ");
+  }
+
+  resultContainer.innerHTML = `
+    <div id="collectSuccessCard" style="
+      padding:15px;
+      border:1px solid #28a745;
+      background:#eaffea;
+      color:#1b5e20;
+      border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.15);
+      margin-top:10px;
+      cursor:pointer;
+    ">
+
+      <div style="
+        font-size:18px;
+        margin-bottom:10px;
+        text-align:center;
+        font-weight:bold;
+      ">
+        SUCCESSFULLY COLLECTED
+      </div>
+
+      <div style="
+        background:#ffffffaa;
+        padding:10px;
+        border-radius:8px;
+      ">
+        ${items}
+
+        <div style="
+          margin-top:10px;
+          text-align:right;
+          font-size:13px;
+          font-weight:700;
+          opacity:0.85;
+        ">
+          ${summaryText ? summaryText : ""}
+        </div>
+      </div>
+
+<div class="dismiss-btn" style="
+  font-size:11px;
+  text-align:right;
+  opacity:0.7;
+  margin-top:6px;
+  cursor:pointer;
+">
+  dismiss
+</div>
+
+    </div>
+  `;
+
+  const card = document.getElementById("collectSuccessCard");
+
+const dismiss = () => onDismiss?.();
+
+// remove global click (IMPORTANT)
+card.onclick = null;
+
+// only dismiss button clickable
+const dismissBtn = card.querySelector(".dismiss-btn");
+
+if (dismissBtn) {
+  dismissBtn.onclick = (e) => {
+    e.stopPropagation();
+    dismiss();
+  };
+}
+}
+</script>
+	
   <script src="shared.js"></script>
 
 </body>
