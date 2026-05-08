@@ -1578,16 +1578,12 @@ function showCollectSuccessCard(dataList, onDismiss) {
     let size = "";
 
     const match = item.match(/\((.*?)\)/);
-
-    if (match) {
-      size = (match[1] || "").trim();
-    }
+    if (match) size = (match[1] || "").trim();
 
     bib = item.replace(/\(.*?\)/g, "").trim();
 
     if (size) {
       const raw = size.toLowerCase().trim();
-
       if (!["na", "n/a", "nil", "-"].includes(raw)) {
         const normalized = normalizeSize(size);
         sizeMap[normalized] = (sizeMap[normalized] || 0) + 1;
@@ -1596,80 +1592,75 @@ function showCollectSuccessCard(dataList, onDismiss) {
 
     return `
       <div style="
-        display:grid;
-        grid-template-columns: 1fr 80px;
-        align-items:center;
-        padding:8px 0;
+        display:flex;
+        justify-content:space-between;
+        padding:6px 0;
         border-bottom:1px solid rgba(0,0,0,0.06);
-        font-size:15px;
+        font-size:14px;
         font-weight:600;
-        gap:10px;
       ">
-        <div style="
-          overflow:hidden;
-          text-overflow:ellipsis;
-          white-space:nowrap;
-        ">
-          ${bib}
-        </div>
-
-        <div style="
-          text-align:right;
-          opacity:0.7;
-        ">
-          ${size || "-"}
-        </div>
+        <span>${bib}</span>
+        <span style="opacity:0.7;">${size || "-"}</span>
       </div>
     `;
   }).join("");
 
-  const sizeKeys = Object.keys(sizeMap)
-    .filter(k => k && !["na", "n/a", "nil", "-"].includes(k.toLowerCase()))
-    .sort((a, b) => getSizeValue(a) - getSizeValue(b));
+  // ❗ CREATE TEMP BLOCK
+  const existing = document.getElementById("collectSuccessTemp");
+  if (existing) existing.remove();
 
-  let summaryText = "";
-
-  if (sizeKeys.length > 1) {
-    summaryText = sizeKeys
-      .map(k => `${k} (${sizeMap[k]})`)
-      .join(" / ");
-  }
-
-resultContainer.innerHTML = `
-  <div style="
-    text-align:center;
-    font-weight:700;
-    margin-top:10px;
-    margin-bottom:10px;
-    color:green;
-  ">
-    SUCCESSFULLY COLLECTED
-  </div>
-
-  <div style="
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:8px;
+  const temp = document.createElement("div");
+  temp.id = "collectSuccessTemp";
+  temp.style.cssText = `
+    margin:10px auto;
+    width:90%;
+    max-width:420px;
     padding:10px;
-    max-height:300px;
-    overflow-y:auto;
-  ">
-    ${items}
-  </div>
-`;
+    border:1px solid #28a745;
+    background:#eaffea;
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  `;
 
-  const card = document.getElementById("collectSuccessCard");
+  temp.innerHTML = `
+    <div style="
+      text-align:center;
+      font-weight:700;
+      color:green;
+      margin-bottom:8px;
+    ">
+      SUCCESSFULLY COLLECTED
+    </div>
 
-  if (!card) return;
+    <div style="
+      background:#fff;
+      padding:8px;
+      border-radius:8px;
+      max-height:220px;
+      overflow-y:auto;
+    ">
+      ${items}
+    </div>
 
-  const dismissBtn = card.querySelector(".dismiss-btn");
+    <div style="
+      text-align:right;
+      font-size:11px;
+      opacity:0.6;
+      margin-top:6px;
+      cursor:pointer;
+    " id="dismissCollectTemp">
+      dismiss
+    </div>
+  `;
 
-  if (dismissBtn) {
-    dismissBtn.onclick = (e) => {
-      e.stopPropagation();
-      onDismiss?.();
-    };
-  }
+  // 🔥 inject WITHOUT touching result card
+  resultContainer.appendChild(temp);
+
+  // dismiss
+  temp.querySelector("#dismissCollectTemp").onclick = () => {
+    temp.remove();
+    onDismiss?.();
+  };
 }
 </script>
 	
