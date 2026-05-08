@@ -361,8 +361,9 @@ if (size) {
 
     return `
       <div style="
-        display:flex;
-        justify-content:space-between;
+        display:grid;
+        grid-template-columns: 1fr 70px;
+        align-items:center;
         padding:6px 0;
         border-bottom:1px solid rgba(0,0,0,0.06);
         font-size:15px;
@@ -387,17 +388,24 @@ if (size) {
       .join(" / ");
   }
 
-  resultContainer.innerHTML = `
-    <div id="collectSuccessCard" style="
-      padding:15px;
-      border:1px solid #28a745;
-      background:#eaffea;
-      color:#1b5e20;
-      border-radius:10px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.15);
-      margin-top:10px;
-      cursor:pointer;
-    ">
+  const isDesktop = window.innerWidth > 768;
+
+<div id="collectSuccessCard" style="
+  padding:15px;
+  border:1px solid #28a745;
+  background:#eaffea;
+  color:#1b5e20;
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  margin-top:10px;
+  cursor:pointer;
+
+  ${isDesktop ? `
+    width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  ` : ""}
+">
 
       <div style="
         font-size:18px;
@@ -408,11 +416,16 @@ if (size) {
         SUCCESSFULLY COLLECTED
       </div>
 
-      <div style="
-        background:#ffffffaa;
-        padding:10px;
-        border-radius:8px;
-      ">
+<div style="
+  background:#ffffffaa;
+  padding:10px;
+  border-radius:8px;
+
+  ${isDesktop ? `
+    max-height: 420px;
+    overflow-y: auto;
+  ` : ""}
+">
         ${items}
 
         <div style="
