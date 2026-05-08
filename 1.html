@@ -190,7 +190,7 @@
   width: 400px; /* NEW */
   margin: 0 auto;
 }
-/*.result-box.list-view {
+.result-box.list-view {
   width: 400px;
   display: flex;
   flex-direction: column;
@@ -210,7 +210,7 @@
 .result-box.grid-view .result-item {
   width: 100%;
   max-width: 320px;
-} */
+}
 
 
 .result-item {
@@ -1140,7 +1140,7 @@ position: relative;
 
   <!-- RIGHT PANEL -->
 <div class="right-panel">
-<!--
+	
 <div class="view-toggle">
   <button id="listViewBtn" onclick="setView('list')">
     <i class="bi bi-list"></i>
@@ -1149,7 +1149,6 @@ position: relative;
     <i class="bi bi-grid"></i>
   </button>
 </div>
--->
       <div id="message"></div>
   <div class="result-container">
     <div id="result" class="result-box" style="text-align: left;"></div>
@@ -1291,7 +1290,6 @@ observer.observe(document.getElementById("result"), {
   subtree: true
 });
 
-/*
   function setView(mode) {
   const box = document.querySelector(".result-box");
   const listBtn = document.getElementById("listViewBtn");
@@ -1318,7 +1316,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const saved = localStorage.getItem("viewMode") || "list";
   setView(saved);
 });
-*/
 
     function cleanApiBase() {
       return String(WORKER_API || "").replace(/\/+$/, "");
