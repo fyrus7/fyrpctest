@@ -388,8 +388,9 @@ if (size) {
       .join(" / ");
   }
 
-  const isDesktop = window.innerWidth > 768;
+const isDesktop = window.innerWidth > 768;
 
+resultContainer.innerHTML = `
 <div id="collectSuccessCard" style="
   padding:15px;
   border:1px solid #28a745;
@@ -449,8 +450,8 @@ if (size) {
   dismiss
 </div>
 
-    </div>
-  `;
+</div>
+`;
 
   const card = document.getElementById("collectSuccessCard");
 
