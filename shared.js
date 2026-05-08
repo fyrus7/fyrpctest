@@ -126,7 +126,7 @@ async function search(customValue) {
     firstSearchDone = true;
   } catch (err) {
     console.error(err);
-    setText("result", "<span style='color:red;'>Server error / CORS error</span>", true);
+    setText("result", "<span style='color:red;'>Invalid QR / fornat not support.</span>", true);
   } finally {
     hideLoader();
     setAllButtonsDisabled(false);
