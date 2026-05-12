@@ -1006,25 +1006,12 @@ function logoutFromMenu() {
 async function validateProtectedPage() {
   const cachedProfile = localStorage.getItem("userProfile");
   const token = localStorage.getItem("sessionToken");
-
-  console.log("LOCAL SESSION CHECK:", {
-    userProfile: cachedProfile,
-    sessionToken: token
-  });
-
   if (!safeEl("userProfile")) return;
 
   if (cachedProfile && token) {
     setText("userProfile", cachedProfile.toUpperCase());
-
     try {
-      const res = await apiJson("/validate", {
-        method: "POST",
-        body: JSON.stringify({ token })
-      });
-
-      console.log("VALIDATE RESPONSE:", res);
-
+      const res = await apiJson("/validate", { method: "POST", body: JSON.stringify({ token }) });
       if (!res.valid) {
         alert("Session expired or logged in on another device");
         localStorage.removeItem("sessionToken");
@@ -1032,11 +1019,10 @@ async function validateProtectedPage() {
         loadLogin();
       }
     } catch (err) {
-      console.error("VALIDATE ERROR:", err);
+      console.error(err);
       alert("Cannot validate session. Check Worker URL / CORS.");
     }
   } else {
-    console.log("NO LOCAL SESSION FOUND");
     loadLogin();
   }
 
